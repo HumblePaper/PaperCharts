@@ -225,15 +225,7 @@ function processData(allText) {
 }
 }
 
-var timeChart = function(fileName , xAxis , yAxis , r , text){
-
-$(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        url: fileName,
-        dataType: "text",
-        success: function(data) {
-
+var timeChart = function(data , xAxis , yAxis , r , text){
             
             var gWidth = width - margin.left - margin.right; //width and height of the graph
             var gHeight = height - margin.top - margin.bottom;
@@ -246,11 +238,6 @@ $(document).ready(function() {
 var xParam , yParam , radius , name , i,j,k;
 var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
 var date = [];
-var start;
-try
-{
-  d3.json(fileName,function(error , d){ 
-    if (error) throw error;
 
 var svg = d3.select("body").select("svg")
 .attr("width" , width)
@@ -266,6 +253,7 @@ var x = d3.scaleTime().rangeRound([0 , gWidth]),
 var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
+var d = $.parseJSON(data);
 
 for(var i = 0 ; i< data_keys.length ; i++)
    { 
@@ -387,15 +375,7 @@ var circle = k.append("circle")
                 .attr("r" , 5)
                 .attr("fill",color(z[yParam]))
                 .attr("opacity","0.5");
-                
 
-            //    k.append("text")
-            //     .attr("x" , function(d){return x(parseTime(d[xParam]));})
-            //     .attr("y" ,y(z[yParam])+(y.bandwidth())/2)
-            //     .style("font-size", "0.7em")
-            //     .attr("text-anchor" , "middle")
-            //     //.style("fill","white")
-            //     .text(function(d) { return d[name]; });
                 k.append("title")
                 .html(function(d) {var str = name +" : "+d[name] +"\n"+radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\ninvestor_name"+" : "+d["investor_name"] ;
                     return str; });
@@ -403,13 +383,6 @@ var circle = k.append("circle")
             gi.exit().remove();
 
  }
-circle.call(zoom); 
-var zoom = d3.behavior.zoom()
-                    .on("zoom", function(){
-                        outer_g.select("g").call(xaxis).selectAll("text").style("font-size", "10px");
-                        circle.selectAll(".circle").attr("transform", "translate(" + d3.event.translate[0]+", 0)");
-                    }).x(x);
-
 
  d3.selectAll("circle").on('mouseover', function() {
                 d3.select(this).transition(t)
@@ -419,21 +392,7 @@ var zoom = d3.behavior.zoom()
                 d3.selectAll("circle").on('mouseout', function() {
                 d3.select(this).transition(t)
                 .attr("opacity","0.5");
-
-                
                 });
-            });
-       
-            }
-            catch(error)
-                {
-                    console.log(error);
-                }
-
-        }
-     });
-
-});
 
 
 function processData(data1) {
@@ -455,20 +414,12 @@ for(var i in  json[keys[1]].data[0])
 }
 }
 
-var heatMap = function(fileName,area,color,name){//function to plot heat map using data from a json
-
-$(document).ready(function() {//ajax code to get key values
-    $.ajax({
-        type: "GET",
-        url: fileName,
-        dataType: "text",
-        success: function(data) {console.log(fileName);
-
-try{
+var heatMap = function(data,area,color,name){//function to plot heat map using data from a json
 var keys = [],i;
+console.log("data1",$.parseJSON(data));
 keys = processData(data);
-console.log("json keys : ",keys);
 
+data = $.parseJSON(data);
 
 var colorParam , areaParam ,nameParam;
 var flagA=0 , flagC=0 , flagN = 0;
@@ -492,7 +443,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
     }
         }  
 
-    if(!flagC)
+            if(!flagC)
             {
                 alert("Wrong color parameter");
             }
@@ -528,11 +479,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
     
     var tot_inv = 0; 
 
-  d3.json(fileName,function(error , data){ //opening the file and getting data in it to data object
-               
-            if (error) 
-                throw error;
- 
+                console.log("data",data);
             var root = d3.hierarchy(data)//creating the root for the tree from the json data
             .eachBefore(function(d) {
                 d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data[nameParam]; })
@@ -583,20 +530,6 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
                 .text(function(d) { var str = "Market : " + d.data[nameParam] + "\nAmount : " + format(d.data[areaParam]) + "\nLast Transaction Date : " + d.data.Last_Transaction_Date + "\nInvestment Count : " + d.data[colorParam];
                     return str; });
 
-            });
-    }
-    catch(error)
-    {
-        console.log(error);
-    }
-
-
-        }//end of success
-     });
-});
-
-
-
 function processData(data) {
 var json = $.parseJSON(data);
 var keys = [];
@@ -606,7 +539,6 @@ for(var key in json["children"][0])
     
 }
 
-    console.log("try : ",json["children"][0][keys[0]]);
      return keys;
 }
 
