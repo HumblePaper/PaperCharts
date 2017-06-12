@@ -254,6 +254,7 @@ var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
 var d = $.parseJSON(data);
+var start = 25, end = 35;
 
 for(var i = 0 ; i< data_keys.length ; i++)
    { 
@@ -311,7 +312,7 @@ if(!flagN)
     alert("Wrong name parameter");
 }
 
-for(i = 10 ; i< 15 ; i++)//limited to 5
+for(i = start ; i< end ; i++)//limited to 5
 for(j=0;j<(d[keys[i]].data).length;j++)
 date.push(parseTime(d[keys[i]].data[j][xParam]));
 
@@ -321,14 +322,14 @@ var z;
 
 i = 0;
 
-y.domain(keys.slice(10,15));
-start = keys[10];//start value of y domain
+y.domain(keys.slice(start,end));
+// start = keys[10];//start value of y domain
 console.log("date :",d3.extent(date));
 
 i = 0;
 
 var color = d3.scaleOrdinal()
-  .domain(keys.slice(10,15))
+  .domain(keys.slice(start,end))
   .range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099"]);
 
 var Xaxis = d3.axisBottom(x);
@@ -356,35 +357,101 @@ var Yaxis = d3.axisLeft(y);
     .call(Xaxis);
 var gY = outer_g.append("g")
      .call(Yaxis);
-
 var inner_g=outer_g.append("g");
+var zoom = d3.zoom()
+    .scaleExtent([1/8, 2])
+    .translateExtent([[-gWidth, -Infinity], [2 * gWidth, Infinity]])
+    .on("zoom", zoomed);
+
+            var zoomRect = svg.append("rect")
+      .attr("class", "zoom")
+      .attr("fill","none")
+      .attr("pointer-events","all")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .call(zoom);
+zoomRect.call(zoom.transform, d3.zoomIdentity);
+
+
+//     svg.append("defs").append("clipPath")
+//     .attr("id", "clip")
+//   .append("rect")
+//     .attr("width", gWidth)
+//     .attr("height", gHeight);
 
 var gi = inner_g.selectAll("g");
-for(i = 10 ; i< 15 ; i++)
+for(i = start ; i< end ; i++)
 {
    z=d[keys[i]];
 
-console.log("data :",z[yParam],yParam);
 var k = gi.data(z.data).enter().append("g");
 var circle = k.append("circle")
                 .attr("class", "circle")
                 .attr("cx" , function(d){ 
+                            
                     return x(parseTime(d[xParam])); })
                 .attr("cy" , y(z[yParam])+(y.bandwidth())/2)
                 .transition(t)
                 .attr("r" , 5)
-                .attr("fill",color(z[yParam]))
+                .attr("fill",function(d){ 
+                           if(parseTime(d[xParam])>x.domain()[0]) 
+                                return color(z[yParam]); 
+                            else
+                        return "none";
+                    })
                 .attr("opacity","0.5");
 
                 k.append("title")
+                .attr("class", "text")
+                .attr("pointer-events","all")
+                .html(function(d) {console.log("yes");
+                    var str = name +" : "+d[name] +"\n"+radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\ninvestor_name"+" : "+d["investor_name"] ;
+                    return str; });
+              
+            gi.exit().remove();
+ }
+
+
+
+function zoomed() {
+  var xz = d3.event.transform.rescaleX(x);
+  gX.call(Xaxis.scale(xz));
+inner_g.selectAll("g").remove();
+ inner_g=outer_g.append("g");
+
+var gi = inner_g.selectAll("g");
+for(i = start ; i< end ; i++)
+{
+   z=d[keys[i]];
+
+var k = gi.data(z.data).enter().append("g");
+var circle = k.append("circle")
+                .attr("class", "circle")
+                .attr("cx" , function(d){ 
+                    
+                    return xz(parseTime(d[xParam])); })
+                .attr("cy" , y(z[yParam])+(y.bandwidth())/2)
+                .transition(t)
+                .attr("r" , 5)
+                .attr("fill",function(d){ 
+                           if(parseTime(d[xParam])>xz.domain()[0]) 
+                                return color(z[yParam]); 
+                            else
+                        return "none";
+                    })
+                .attr("opacity","0.5");
+
+                k.append("title")
+                .attr("class", "text")
+                .attr("pointer-events","all")
                 .html(function(d) {var str = name +" : "+d[name] +"\n"+radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\ninvestor_name"+" : "+d["investor_name"] ;
                     return str; });
               
             gi.exit().remove();
 
  }
-
- d3.selectAll("circle").on('mouseover', function() {
+d3.selectAll("circle").on('mouseover', function() {
                 d3.select(this).transition(t)
                 .attr("opacity","0.7");
                 });
@@ -392,8 +459,8 @@ var circle = k.append("circle")
                 d3.selectAll("circle").on('mouseout', function() {
                 d3.select(this).transition(t)
                 .attr("opacity","0.5");
-                });
-
+            }); 
+}
 
 function processData(data1) {
 var json = $.parseJSON(data1);
