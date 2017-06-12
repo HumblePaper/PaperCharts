@@ -1,0 +1,332 @@
+[
+	{
+		"Market": "Used Goods Marketplace",
+		"Amount": "423225136",
+		"Last_Transaction_Date": "2016-07-23",
+		"Investment_Count": "14"
+	},
+	{
+		"Market": "Marketplace",
+		"Amount": "21517113711",
+		"Last_Transaction_Date": "2016-07-23",
+		"Investment_Count": "98"
+	},
+	{
+		"Market": "Healthcare Tech",
+		"Amount": "3526161580",
+		"Last_Transaction_Date": "2016-09-16",
+		"Investment_Count": "127"
+	},
+	{
+		"Market": "HR Tech",
+		"Amount": "2095630",
+		"Last_Transaction_Date": "2016-10-01",
+		"Investment_Count": "2"
+	},
+	{
+		"Market": "Skill development",
+		"Amount": "2095630",
+		"Last_Transaction_Date": "2016-10-01",
+		"Investment_Count": "2"
+	},
+	{
+		"Market": "Online Hypermarket",
+		"Amount": "109672354043",
+		"Last_Transaction_Date": "2016-10-03",
+		"Investment_Count": "121"
+	},
+	{
+		"Market": "Coworking",
+		"Amount": "539838101",
+		"Last_Transaction_Date": "2016-10-28",
+		"Investment_Count": "14"
+	},
+	{
+		"Market": "Online Grocery",
+		"Amount": "13085351803",
+		"Last_Transaction_Date": "2016-11-05",
+		"Investment_Count": "139"
+	},
+	{
+		"Market": "K12 Learning",
+		"Amount": "6705605708",
+		"Last_Transaction_Date": "2016-11-21",
+		"Investment_Count": "34"
+	},
+	{
+		"Market": "Hyperlocal",
+		"Amount": "2598330932",
+		"Last_Transaction_Date": "2016-11-30",
+		"Investment_Count": "36"
+	},
+	{
+		"Market": "Sales Tech",
+		"Amount": "287698360",
+		"Last_Transaction_Date": "2016-12-10",
+		"Investment_Count": "2"
+	},
+	{
+		"Market": "Hotel Aggregation",
+		"Amount": "11750375703",
+		"Last_Transaction_Date": "2016-12-15",
+		"Investment_Count": "52"
+	},
+	{
+		"Market": "Online Lingerie",
+		"Amount": "66819311",
+		"Last_Transaction_Date": "2016-12-19",
+		"Investment_Count": "42"
+	},
+	{
+		"Market": "aggregrator",
+		"Amount": "528546703",
+		"Last_Transaction_Date": "2017-01-21",
+		"Investment_Count": "49"
+	},
+	{
+		"Market": "Parenting",
+		"Amount": "174406513",
+		"Last_Transaction_Date": "2017-01-30",
+		"Investment_Count": "109"
+	},
+	{
+		"Market": "B2B e-commerce",
+		"Amount": "270860555",
+		"Last_Transaction_Date": "2017-02-03",
+		"Investment_Count": "41"
+	},
+	{
+		"Market": "Lending",
+		"Amount": "113773956",
+		"Last_Transaction_Date": "2017-02-08",
+		"Investment_Count": "13"
+	},
+	{
+		"Market": "Patient Monitoring",
+		"Amount": "16557691",
+		"Last_Transaction_Date": "2017-02-09",
+		"Investment_Count": "9"
+	},
+	{
+		"Market": "Big Data Analysis",
+		"Amount": "65395558",
+		"Last_Transaction_Date": "2017-03-28",
+		"Investment_Count": "15"
+	},
+	{
+		"Market": "Financial Services",
+		"Amount": "5388747156",
+		"Last_Transaction_Date": "2017-03-29",
+		"Investment_Count": "91"
+	},
+	{
+		"Market": "On-demand Logistics",
+		"Amount": "167133159",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "75"
+	},
+	{
+		"Market": "Online truck aggregation",
+		"Amount": "50299670",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "69"
+	},
+	{
+		"Market": "Receipe Box",
+		"Amount": "257891312",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "43"
+	},
+	{
+		"Market": "B2B Logistics",
+		"Amount": "44016120",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "55"
+	},
+	{
+		"Market": "Taxi Booking",
+		"Amount": "159849390436",
+		"Last_Transaction_Date": "2017-03-31",
+		"Investment_Count": "163"
+	},
+	{
+		"Market": "Cab Aggregation",
+		"Amount": "159849390436",
+		"Last_Transaction_Date": "2017-03-31",
+		"Investment_Count": "163"
+	},
+	{
+		"Market": "Internet First Resturants",
+		"Amount": "3481361113",
+		"Last_Transaction_Date": "2017-03-31",
+		"Investment_Count": "69"
+	},
+	{
+		"Market": "Food Tech",
+		"Amount": "10932915894",
+		"Last_Transaction_Date": "2017-03-31",
+		"Investment_Count": "186"
+	},
+	{
+		"Market": "Exam Prep",
+		"Amount": "8445724628",
+		"Last_Transaction_Date": "2017-03-31",
+		"Investment_Count": "233"
+	},
+	{
+		"Market": "Financial Inclusion",
+		"Amount": "14350051",
+		"Last_Transaction_Date": "2017-04-08",
+		"Investment_Count": "9"
+	},
+	{
+		"Market": "Online Fashion",
+		"Amount": "808970911",
+		"Last_Transaction_Date": "2017-04-12",
+		"Investment_Count": "58"
+	},
+	{
+		"Market": "Live Streaming",
+		"Amount": "15396956",
+		"Last_Transaction_Date": "2017-04-20",
+		"Investment_Count": "18"
+	},
+	{
+		"Market": "Healthcare Services",
+		"Amount": "3373470904",
+		"Last_Transaction_Date": "2017-04-24",
+		"Investment_Count": "81"
+	},
+	{
+		"Market": "Food Ordering",
+		"Amount": "2406061300",
+		"Last_Transaction_Date": "2017-04-25",
+		"Investment_Count": "23"
+	},
+	{
+		"Market": "Snackbox",
+		"Amount": "67398304",
+		"Last_Transaction_Date": "2017-05-15",
+		"Investment_Count": "20"
+	},
+	{
+		"Market": "receivables management",
+		"Amount": "13396833",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "15"
+	},
+	{
+		"Market": "dental",
+		"Amount": "35523375",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "20"
+	},
+	{
+		"Market": "Content Creation",
+		"Amount": "145098171",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "101"
+	},
+	{
+		"Market": "payments and billings",
+		"Amount": "13396833",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "15"
+	},
+	{
+		"Market": "Home Salon",
+		"Amount": "68819229",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "18"
+	},
+	{
+		"Market": "Ad tech",
+		"Amount": "29796894",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "15"
+	},
+	{
+		"Market": "Event Planning",
+		"Amount": "7604960",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "13"
+	},
+	{
+		"Market": "Online Pharmacy",
+		"Amount": "1500684994",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "94"
+	},
+	{
+		"Market": "Marketing Tech",
+		"Amount": "65669317",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "28"
+	},
+	{
+		"Market": "Marketing Automation",
+		"Amount": "65669317",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "28"
+	},
+	{
+		"Market": "Used Car Marketplace",
+		"Amount": "19777342610",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "56"
+	},
+	{
+		"Market": "Online Classified",
+		"Amount": "19777342610",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "56"
+	},
+	{
+		"Market": "Doctor Discovery",
+		"Amount": "114495984",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "11"
+	},
+	{
+		"Market": "Food Ordering & Delivery",
+		"Amount": "4913598753",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "27"
+	},
+	{
+		"Market": "SMB financing",
+		"Amount": "350339377",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "62"
+	},
+	{
+		"Market": "Payments",
+		"Amount": "1235665250",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "8"
+	},
+	{
+		"Market": "F&B chain",
+		"Amount": "64496423",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "47"
+	},
+	{
+		"Market": "Diagnostic lab aggregator",
+		"Amount": "278194752",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "48"
+	},
+	{
+		"Market": "money transfer",
+		"Amount": "536619486",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "16"
+	},
+	{
+		"Market": "F&B chain",
+		"Amount": "59249915",
+		"Last_Transaction_Date": "",
+		"Investment_Count": "32"
+	}
+]
