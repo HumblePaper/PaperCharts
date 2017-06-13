@@ -28,67 +28,56 @@ var set_canvas = function(w,h)//assign values passed to width and height paramet
     height = h;
 }
 
-
-
-var bubbleChart = function(fileName , xAxis , yAxis , r , text){//function to plot bubble chart using data from a csv file
-
-$(document).ready(function() {//ajax code to match axis,radius and name params to the function values
-    $.ajax({
-        type: "GET",
-        url: fileName,
-        dataType: "text",
-        success: function(data) {
-
-            
+var bubbleChart = function(data , xAxis , yAxis , r , text){
+ /*
+ this function plots a static bubble chart with a constant radius
+ parameters,
+ data : json data obtained from the ajax code in example function
+ xAxis : the json key which corresponds to the value plotted in the xAxis
+ yAxis : the json key which corresponds to the value plotted in the yAxis
+ r :  the json key which corresponds to the radius of the bubbles plotted
+ text :  the json key which corresponds to the text inside the bubbles plotted
+ */           
             var gWidth = width - margin.left - margin.right; //width and height of the graph
             var gHeight = height - margin.top - margin.bottom;
-            var keys=[];
-            keys = processData(data);
-
-
-var xParam , yParam , radius , name , i,count = 0;
+            var k,keys,i;
+            k = processData(data);//obtaing keys of the json object
+            keys = k[0];
+console.log("keys",keys);
+var xParam , yParam , radius , name , i,j,k;
 var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
+var date = [];
 
-
-try
-{
 var svg = d3.select("body").select("svg")
 .attr("width" , width)
 .attr("height" , height);
-var outer_g = svg.append("g").attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
-var x = d3.scaleTime().rangeRound([0 , gWidth]),
-    y = d3.scaleLinear().rangeRound([gHeight , 0]);//setting the x and y ranges for the axes
+var outer_g = svg.append("g").attr("class","outer_g")
+.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+var x = d3.scaleTime().rangeRound([0 , gWidth]),//seeting range for x and y axes
+   y = d3.scaleLinear().rangeRound([gHeight , 0]);
             
-var t = d3.transition().duration(750);//create a transition variable for 750ms
+var t = d3.transition().duration(750);
 
-var parseTime = d3.timeParse("%Y-%m-%d");//date format for parsing data from file
+var parseTime = d3.timeParse("%Y-%m-%d");//date format
+var d = $.parseJSON(data);
 
-d3.csv(fileName , function(d){ //parsing data
-            keys = Object.keys(d);
-
-                   for(i = 0 ; i< keys.length ; i++)
-                    {
-                    if(!isNaN(d[keys[i]]))   
-                        d[keys[i]] = +d[keys[i]];
-    
-                    //if(moment(d[keys[i]],"YYYY-MM-DD",true).isValid())
-                     if(keys[i]=="Last_Transaction_Date")
-                        {
-                            d[keys[i]] = parseTime(d[keys[i]]);
-
-                    }
-
-    if(keys[i].search(xAxis) == 0)//setting params(axes,radius and text)
+for(var i = 0 ; i< keys.length ; i++)//matching function parameters to the json keys
+   { 
+    if(keys[i].search(xAxis) == 0)
     {
         xParam = keys[i];
         flagX=1;
     }
+
     if(keys[i].search(yAxis) == 0)
     {
         yParam = keys[i];
         flagY=1;
     }
+
     if(keys[i].search(r) == 0)
     {
         radius = keys[i];
@@ -99,11 +88,7 @@ d3.csv(fileName , function(d){ //parsing data
         name = keys[i];
         flagN=1;
     }
-
-                    }
-
-            return d;} , function(error , data){  
-
+}
 if(!flagX)
 {
     alert("Wrong x parameter");
@@ -124,15 +109,17 @@ if(!flagN)
     alert("Wrong name parameter");
 }
 
-                if (error) throw error;
+d.forEach(function(d){//parsing json data
+d[xParam] = parseTime(d[xParam]);
+d[radius] = +d[radius];
+d[yParam] = +d[yParam];
+});
 
-x.domain(d3.extent(data , function(d) { return d[xParam]; }));
-y.domain(d3.extent(data , function(d) { return d[yParam]; }));//setting x and y axes domains
+x.domain(d3.extent(d , function(d) { return d[xParam]; }));//setting domains for x and y axes
+y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
+     return d[yParam]; }));
 
-
-var Xaxis = outer_g.append("g").attr("class" , "xaxis")//plotting x axis 
-                .attr("transform" , "translate(0," + gHeight + ")")
-                .call(d3.axisBottom(x));
+var Xaxis = d3.axisBottom(x);//plotting x axis
             outer_g.append("text")
                 .attr("font" , "10px sans serif")
                 .attr("y" , (gHeight + 15 + margin.top))
@@ -141,49 +128,59 @@ var Xaxis = outer_g.append("g").attr("class" , "xaxis")//plotting x axis
                 .attr("text-anchor" , "middle")
                 .text(xParam);
 
-var Yaxis = outer_g.append("g").attr("class","yaxis")//plotting y axes
-                .call(d3.axisLeft(y));
+var Yaxis = d3.axisLeft(y);//plotting y axis
             outer_g.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("font" , "10px sans serif")
                 .attr("y", 5-(margin.left))
-                .attr("x", 0 - (gHeight/2)+50)
+                .attr("x", 0 - (gHeight/2))
                 .attr("dy", "0.71em")
                 .attr("text-anchor", "middle")
                 .text(yParam);
 
+    var gX = outer_g.append("g")
+    .attr("class","xaxis")
+    .attr("transform", "translate(0," + gHeight + ")")
+    .call(Xaxis);
+
+var gY = outer_g.append("g")
+     .call(Yaxis);
+
 var inner_g=outer_g.append("g");
-
 var gi = inner_g.selectAll("g");
-
-var k = gi.data(data).enter().append("g");
-
-var circle = k.append("circle")//plotting circles
-                .attr("cx" , function(d){ return x(d[xParam]); })
+var k = gi.data(d).enter().append("g");
+var circle = k.append("circle")
+                .attr("class", "circle")
+                .attr("cx" , function(d){ 
+                            
+                    return x(d[xParam]); })
                 .attr("cy" , function(d){ return y(d[yParam]); })
-                .transition(t)
-                .attr("r" , function(d) { 
-                     if  (d[radius]>15696876273)
-                         return (d[radius]/2000000000);  
-                     else if (d[radius]>10464584182)
-                        return (d[radius]/300000000);
-                    else if(d[radius]>5232292091)
-                        return (d[radius]/150000000); 
-                    else if(d[radius]>2616146045.5)
-                        return (d[radius]/100000000); 
-                    else if(d[radius]>1308073022)
-                        return (d[radius]/50000000);
-                    else if (d[radius]>(654036511))
-                        return (d[radius]/30000000);
-                    else if (d[radius]>(327018255))
-                        return (d[radius]/7000000);
-                    else 
-                        return (d[radius]/6000000);
-                     })
-                .attr("fill","rgb(50 , 154 , 188)")
+                .attr("r" ,40)//"rgb(50 , 154 , 188)"
+                .attr("fill",function(d){ 
+                           if(d[xParam]>x.domain()[0]) 
+                                return "rgb(50 , 154 , 188)"; 
+                            else
+                        return "none";
+                    })
                 .attr("opacity","0.5");
+                 
+                 k.append("text")//text inside circle
+                 .attr("class", "text")
+                .attr("x" , function(d){return x(d[xParam]);})
+                .attr("y" , function(d){return y(d[yParam]);})
+                .style("font-size", "0.7em")
+                .attr("text-anchor" , "middle")
+                .text(function(d) { return d[name]; });
 
-                d3.selectAll("circle").on('mouseover', function() {//hover implementation
+                 k.append("title")
+                .attr("class", "text")
+                .attr("pointer-events","all")
+                .html(function(d) {var str = radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\n"+name+" : "+d[name]+"\n"+yParam+" : "+d[yParam];
+                    return str; });
+              
+            gi.exit().remove();
+
+            d3.selectAll("circle").on('mouseover', function() {//hover implementation
                 d3.select(this).transition(t)
                 .attr("opacity","0.7");
                 });
@@ -193,51 +190,46 @@ var circle = k.append("circle")//plotting circles
                 .attr("opacity","0.5");
                 });
 
-               k.append("text")//text inside circle
-                .attr("x" , function(d){return x(d[xParam]);})
-                .attr("y" , function(d){return y(d[yParam]);})
-                .style("font-size", "0.7em")
-                .attr("text-anchor" , "middle")
-                //.style("fill","white")
-                .text(function(d) { return d[name]; });
-                k.append("title")//tool tip data
-                .html(function(d) {var str = radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\n"+name+" : "+d[name]+"\n"+yParam+" : "+d[yParam];
-                    return str; });
-                    
-            gi.exit().remove();
-            });
-            }
-            catch(error)
-                {
-                    console.log(error);
-                }
+function processData(data1) {
+var json = $.parseJSON(data1);
+var k = [];
+var keys = [];
+var i=0;
+for(var key in json[0])
+{
+    keys.push(key);
 
-        }
-     });
-});
+}
+console.log("keys",keys);
+     k.push(keys);//k[0] will be the main key
+     return k;
 
-function processData(allText) {
-     console.log("file read succesfully");
-     var allTextLines = allText.split(/\r\n|\n/);
-     keys = allTextLines[0].split(',');
-     console.log("after reading file",keys);
-     return keys;
 }
 }
 
-var timeChart = function(data , xAxis , yAxis , r , text){
-            
+var bubbleChartZoom = function(data , xAxis , yAxis , r , text){//tooltip not working
+ /*
+ this function plots a static bubble chart with a constant radius and zoomable
+ parameters,
+ data : json data obtained from the ajax code in example function
+ xAxis : the json key which corresponds to the value plotted in the xAxis
+ yAxis : the json key which corresponds to the value plotted in the yAxis
+ r :  the json key which corresponds to the radius of the bubbles plotted
+ text :  the json key which corresponds to the text inside the bubbles plotted
+ */                
             var gWidth = width - margin.left - margin.right; //width and height of the graph
             var gHeight = height - margin.top - margin.bottom;
-            var k,keys,data_keys = [],i;
+            var k,keys,i;
             k = processData(data);
             keys = k[0];
-            data_keys = k[1];
-
-
+console.log("keys",keys);
 var xParam , yParam , radius , name , i,j,k;
 var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
 var date = [];
+
+var tooltip = d3.select("body").append("div")	
+    .attr("class", "hidden tooltip")				
+    .style("opacity", 0);
 
 var svg = d3.select("body").select("svg")
 .attr("width" , width)
@@ -248,13 +240,248 @@ var outer_g = svg.append("g").attr("class","outer_g")
 
 
 var x = d3.scaleTime().rangeRound([0 , gWidth]),
+   y = d3.scaleLinear().rangeRound([gHeight , 0]);
+            
+var t = d3.transition().duration(750);
+
+var parseTime = d3.timeParse("%Y-%m-%d");//date format
+var d = $.parseJSON(data);
+
+for(var i = 0 ; i< keys.length ; i++)
+   { 
+    if(keys[i].search(xAxis) == 0)
+    {
+        xParam = keys[i];
+        flagX=1;
+    }
+
+    if(keys[i].search(yAxis) == 0)
+    {
+        yParam = keys[i];
+        flagY=1;
+    }
+
+    if(keys[i].search(r) == 0)
+    {
+        radius = keys[i];
+        flagR=1;
+    }
+     if(keys[i].search(text) == 0)
+    {
+        name = keys[i];
+        flagN=1;
+    }
+}
+if(!flagX)
+{
+    alert("Wrong x parameter");
+}
+
+if(!flagY)
+{
+    alert("Wrong y parameter");
+}
+
+if(!flagR)
+{
+    alert("Wrong radius parameter");
+}
+
+if(!flagN)
+{
+    alert("Wrong name parameter");
+}
+
+d.forEach(function(d){
+d[xParam] = parseTime(d[xParam]);
+d[radius] = +d[radius];
+d[yParam] = +d[yParam];
+});
+
+x.domain(d3.extent(d , function(d) { return d[xParam]; }));
+y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
+     return d[yParam]; }));
+
+console.log("y",d3.extent(d , function(d1) {
+     return d1[yParam]; }));
+var Xaxis = d3.axisBottom(x);
+            outer_g.append("text")
+                .attr("font" , "10px sans serif")
+                .attr("y" , (gHeight + 15 + margin.top))
+                .attr("x" , (gWidth / 2))
+                .attr("dy" , "0.71em")
+                .attr("text-anchor" , "middle")
+                .text(xParam);
+
+var Yaxis = d3.axisLeft(y);
+            outer_g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("font" , "10px sans serif")
+                .attr("y", 5-(margin.left))
+                .attr("x", 0 - (gHeight/2))
+                .attr("dy", "0.71em")
+                .attr("text-anchor", "middle")
+                .text(yParam);
+
+    var gX = outer_g.append("g")
+    .attr("class","xaxis")
+    .attr("transform", "translate(0," + gHeight + ")")
+    .call(Xaxis);
+
+var gY = outer_g.append("g")
+     .call(Yaxis);
+
+
+    
+
+var zoom = d3.zoom()
+    .scaleExtent([1/8, 8])
+    .translateExtent([[-gWidth, -Infinity], [2 * gWidth, Infinity]])
+    .extent([[0, 0], [gWidth, gHeight]])
+    .on("zoom", zoomed);
+
+var inner_g=outer_g.append("g");
+var gi = inner_g.selectAll("g");
+var k = gi.data(d).enter().append("g");
+var circle = k.append("circle")
+                .attr("class", "circle")
+                .attr("cx" , function(d){ 
+                            
+                    return x(d[xParam]); })
+                .attr("cy" , function(d){ return y(d[yParam]); })
+                .attr("r" ,40)//"rgb(50 , 154 , 188)"
+                .attr("fill",function(d){ 
+                           if(d[xParam]>x.domain()[0]) 
+                                return "rgb(50 , 154 , 188)"; 
+                            else
+                        return "none";
+                    })
+                .attr("opacity","0.5").on("mouseover", function (d) {
+          tooltip.classed('hidden', false)
+            .attr('style', 'left:' + (d3.event.clientX + 20) + 'px; top:' + (d3.event.clientY - 20) + 'px')
+            .html(function(d) {var str = radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\n"+name+" : "+d[name]+"\n"+yParam+" : "+d[yParam];
+                    return str; });
+        })					
+        .on("mouseout",function () {
+          tooltip.classed('hidden', true);
+        });
+                 
+                 k.append("text")//text inside circle
+                 .attr("class", "text")
+                .attr("x" , function(d){return x(d[xParam]);})
+                .attr("y" , function(d){return y(d[yParam]);})
+                .style("font-size", "0.7em")
+                .attr("text-anchor" , "middle")
+                .text(function(d) { return d[name]; });
+            gi.exit().remove();
+
+function zoomed() {
+  var xz = d3.event.transform.rescaleX(x);
+  gX.call(Xaxis.scale(xz));
+
+        svg.selectAll(".circle").data(d)
+        .attr("cx", function(d){ return xz(d[xParam]); })
+        .attr("cy", function(d){ return y(d[yParam]); })
+        .attr("fill",function(d){ 
+                           if(d[xParam]>xz.domain()[0]) 
+                                return "rgb(50 , 154 , 188)"; 
+                            else
+                        return "none";
+                    });
+
+        svg.selectAll(".text")
+        .attr("x", function(d){ return xz(d[xParam]); })
+        .attr("y", function(d){ return y(d[yParam]); })
+        .attr("fill",function(d){ 
+                           if(d[xParam]<xz.domain()[0]) 
+                        return "none";
+                    });
+}
+            var zoomRect = svg.append("rect")
+      .attr("class", "zoom")
+      .attr("fill","none")
+      .attr("pointer-events","all")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .call(zoom);
+
+function processData(data1) {
+var json = $.parseJSON(data1);
+var k = [];
+var keys = [];
+var i=0;
+for(var key in json[0])
+{
+    keys.push(key);
+
+}
+console.log("keys",keys);
+     k.push(keys);//k[0] will be the main key
+     return k;
+
+}
+}
+
+var timeChart = function(data , xAxis , yAxis , r , text){//tooltip not working
+ /*
+ this function plots a static bubble chart with a constant radius and zoomable
+ parameters,
+ data : json data obtained from the ajax code in example function
+ xAxis : the json key which corresponds to the value plotted in the xAxis
+ yAxis : the json key which corresponds to the value plotted in the yAxis
+ r :  the json key which corresponds to the radius of the bubbles plotted
+ text :  the json key which corresponds to the text inside the bubbles plotted
+ */   
+            var gWidth = width - margin.left - margin.right; //width and height of the graph
+            var gHeight = height - margin.top - margin.bottom;
+            var k,keys,data_keys = [];
+            k = processData(data);
+            keys = k[0];
+            data_keys = k[1];
+
+
+var xParam , yParam , radius , name , i,j;
+var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
+var date = [];
+var start = 0, end = 5;
+var div = d3.select("body").append("div")
+            .attr("id","filter");
+var svg = d3.select("body").append("svg")
+.attr("width" , width)
+.attr("height" , height);
+
+
+var div = d3.select("body").append("div")
+            .attr("id","filter");
+var filter = d3.select("#filter").append("p").attr("font-size",10).html("Index Filter : ");
+var dropDown = filter.append("select")
+                 .attr("name", "five-sectors");
+/*list of options for filtering the graph based on index in the json file*/
+var opt = ["start-end","0 - 5","5 - 10","10 - 15","15 - 20","20 - 25",
+           "25 - 30","30 - 35","35 - 40","40 - 45","45 - 50","50 - 55" ];
+
+var options = dropDown.selectAll("option")
+                      .data(opt)
+                      .enter()
+                      .append("option");
+
+options.text(function(d){return d;})
+       .attr("value" , function(d){var value = d.split(" ")
+           return value[0];});
+
+var outer_g = svg.append("g").attr("class","outer_g")
+.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+//selectiing type of scales and its ranges for x and y axes
+var x = d3.scaleTime().rangeRound([0 , gWidth]),
     y = d3.scaleBand().rangeRound([gHeight , 0]).padding(0.1);
             
 var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
 var d = $.parseJSON(data);
-var start = 25, end = 35;
+
 
 for(var i = 0 ; i< data_keys.length ; i++)
    { 
@@ -312,6 +539,16 @@ if(!flagN)
     alert("Wrong name parameter");
 }
 
+ dropDown.on("change", function() {
+       start = parseInt(this.value);
+       end = start + 5;
+       plot(start,end);
+  });
+
+function plot(start,end)
+{
+console.log(start,",",end);
+
 for(i = start ; i< end ; i++)//limited to 5
 for(j=0;j<(d[keys[i]].data).length;j++)
 date.push(parseTime(d[keys[i]].data[j][xParam]));
@@ -320,18 +557,15 @@ x.domain(d3.extent(date));
 
 var z;
 
-i = 0;
-
 y.domain(keys.slice(start,end));
-// start = keys[10];//start value of y domain
-console.log("date :",d3.extent(date));
 
-i = 0;
+console.log("date :",d3.extent(date));
 
 var color = d3.scaleOrdinal()
   .domain(keys.slice(start,end))
   .range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099"]);
 
+outer_g.selectAll("g").remove();
 var Xaxis = d3.axisBottom(x);
             outer_g.append("text")
                 .attr("font" , "10px sans serif")
@@ -359,27 +593,20 @@ var gY = outer_g.append("g")
      .call(Yaxis);
 var inner_g=outer_g.append("g");
 var zoom = d3.zoom()
-    .scaleExtent([1/8, 2])
+    .scaleExtent([1/8, 4])
     .translateExtent([[-gWidth, -Infinity], [2 * gWidth, Infinity]])
     .on("zoom", zoomed);
 
-            var zoomRect = svg.append("rect")
+    var zoomRect = svg.append("rect")
       .attr("class", "zoom")
       .attr("fill","none")
+      .attr("border","1px solid")
       .attr("pointer-events","all")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", gWidth)
+      .attr("height", gHeight)
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(zoom);
 zoomRect.call(zoom.transform, d3.zoomIdentity);
-
-
-//     svg.append("defs").append("clipPath")
-//     .attr("id", "clip")
-//   .append("rect")
-//     .attr("width", gWidth)
-//     .attr("height", gHeight);
-
 var gi = inner_g.selectAll("g");
 for(i = start ; i< end ; i++)
 {
@@ -393,7 +620,7 @@ var circle = k.append("circle")
                     return x(parseTime(d[xParam])); })
                 .attr("cy" , y(z[yParam])+(y.bandwidth())/2)
                 .transition(t)
-                .attr("r" , 5)
+                .attr("r" , 10)
                 .attr("fill",function(d){ 
                            if(parseTime(d[xParam])>x.domain()[0]) 
                                 return color(z[yParam]); 
@@ -401,19 +628,9 @@ var circle = k.append("circle")
                         return "none";
                     })
                 .attr("opacity","0.5");
-
-                k.append("title")
-                .attr("class", "text")
-                .attr("pointer-events","all")
-                .html(function(d) {console.log("yes");
-                    var str = name +" : "+d[name] +"\n"+radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\ninvestor_name"+" : "+d["investor_name"] ;
-                    return str; });
               
             gi.exit().remove();
  }
-
-
-
 function zoomed() {
   var xz = d3.event.transform.rescaleX(x);
   gX.call(Xaxis.scale(xz));
@@ -425,7 +642,7 @@ for(i = start ; i< end ; i++)
 {
    z=d[keys[i]];
 
-var k = gi.data(z.data).enter().append("g");
+var k = gi.data(z.data).attr("class", "entity").enter().append("g");
 var circle = k.append("circle")
                 .attr("class", "circle")
                 .attr("cx" , function(d){ 
@@ -433,7 +650,7 @@ var circle = k.append("circle")
                     return xz(parseTime(d[xParam])); })
                 .attr("cy" , y(z[yParam])+(y.bandwidth())/2)
                 .transition(t)
-                .attr("r" , 5)
+                .attr("r" , 10)
                 .attr("fill",function(d){ 
                            if(parseTime(d[xParam])>xz.domain()[0]) 
                                 return color(z[yParam]); 
@@ -442,25 +659,11 @@ var circle = k.append("circle")
                     })
                 .attr("opacity","0.5");
 
-                k.append("title")
-                .attr("class", "text")
-                .attr("pointer-events","all")
-                .html(function(d) {var str = name +" : "+d[name] +"\n"+radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\ninvestor_name"+" : "+d["investor_name"] ;
-                    return str; });
-              
-            gi.exit().remove();
-
  }
-d3.selectAll("circle").on('mouseover', function() {
-                d3.select(this).transition(t)
-                .attr("opacity","0.7");
-                });
-            
-                d3.selectAll("circle").on('mouseout', function() {
-                d3.select(this).transition(t)
-                .attr("opacity","0.5");
-            }); 
 }
+}
+
+
 
 function processData(data1) {
 var json = $.parseJSON(data1);
@@ -481,7 +684,14 @@ for(var i in  json[keys[1]].data[0])
 }
 }
 
-var heatMap = function(data,area,color,name){//function to plot heat map using data from a json
+var heatMap = function(data,area,color,name){
+    /*
+    this function plots a heat map using the above given parameters,
+    data : the json object obtained after passing the json file to ajax code in the example
+    area : the json key which corresponds to the area of the cell in the heatmap
+    color : the json key which correspond to the color depth of the cell
+    name : the json key which corresponds to the cell name(i.e. text inside the cell)
+    */
 var keys = [],i;
 console.log("data1",$.parseJSON(data));
 keys = processData(data);
@@ -527,7 +737,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
       width = width - margin.right - margin.left;
       height = height - margin.top - margin.bottom;
       
-  var svg = d3.select("body")//creating the canvas
+  var svg = d3.select("body")//creating the canvas with the specified width and height
             .append("svg");
 
             svg.attr("width",width);
@@ -536,7 +746,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
             
     var format = d3.format(",d");//used to format the no.s(grouping to 1000's using ',')
 
-    var color = d3.interpolateRgb("#FF0000","#010000");//creating color scale
+    var color = d3.interpolateRgb("#FF0000","#010000");//creating color scale from "#FF0000" to "#010000"
 
     var treemap = d3.treemap()
         .tile(d3.treemapResquarify)
@@ -568,13 +778,12 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
             
             var rect = cell.append("rect")//creating rectangles to data cells
                 .attr("id", function(d) {tot_inv += d.data[colorParam]; 
-                     console.log("total",tot_inv);
                     return d.data.id; })
                 .attr("width", function(d) { console.log("x,y ",d.y1 - d.y0);
                     return d.x1 - d.x0; })
                 .attr("height", function(d) { 
                     return d.y1 - d.y0; })
-                .attr("fill", function(d) { console.log((d.data.id,d.data[colorParam]/tot_inv)*10,tot_inv,d.data[colorParam]);
+                .attr("fill", function(d) {
                      return color((d.data[colorParam]/tot_inv)*10); });
             cell.append("clipPath")
                 .attr("id", function(d) { return "clip-" + d.data.id; })
@@ -597,7 +806,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
                 .text(function(d) { var str = "Market : " + d.data[nameParam] + "\nAmount : " + format(d.data[areaParam]) + "\nLast Transaction Date : " + d.data.Last_Transaction_Date + "\nInvestment Count : " + d.data[colorParam];
                     return str; });
 
-function processData(data) {
+function processData(data) {//function to obtain keys of json object
 var json = $.parseJSON(data);
 var keys = [];
 for(var key in json["children"][0])
@@ -617,6 +826,7 @@ exports.set_margin = set_margin;
 exports.set_canvas = set_canvas;
 exports.width = width;
 exports.height = height;
+exports.bubbleChartZoom = bubbleChartZoom;
 exports.bubbleChart = bubbleChart;
 exports.heatMap = heatMap; 
 exports.timeChart = timeChart;
