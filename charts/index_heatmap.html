@@ -13,19 +13,19 @@
         $(document).ready(function() {//ajax code to get key values
     $.ajax({
         type: "GET",
-        url: "data/data.json",//path of json data file
+        url: "data/data.json",//path of json data file from which json object is obtained
         dataType: "text",
         success: function(data) {
                 
-        graph.set_canvas(960,500);
+        graph.set_canvas(960,500);//set canvas width and height
         graph.set_margin(20,60,120,20);
-        //arguments for heat map function(fileName,area,color,name)
+        //arguments for heat map function(json_data,area,color_depth,name)
         graph.heatMap(data,"Amount","Investment_Count","Market");
 }
     })//end of ajax
 }); 
 
-function processData(data) {
+function processData(data) {//extracting the data object from the json file
 var json = $.parseJSON(data);
 var keys = [];
 for(var key in json["children"][0])
@@ -33,8 +33,6 @@ for(var key in json["children"][0])
     keys.push(key);
     
 }
-
-    console.log("try : ",json["children"][0][keys[0]]);
      return keys;
 }
 </script>

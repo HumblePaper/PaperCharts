@@ -2,19 +2,58 @@
 <html>
 <head>
 <meta charset="utf-8">
+<style>
+        /*.hidden {
+  display: none;
+}
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}*/
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+</style>
 </head>
 <body>
 <svg></svg>
 <script src="lib/jquery-3.2.1.js"></script>
 <script src='lib/d3.min.js'></script>
 <script src='lib/moment.js'></script>
+<!--<script src="lib/d3-tip.js"></script>-->
 <script src="chart.js"></script>
 <script>
+            $(document).ready(function() {//ajax code to get key values
+    $.ajax({
+        type: "GET",
+        url: "data/market-data-2-jun-2017.json",//path of json data file
+        dataType: "text",
+        success: function(data) {
+              
+
         graph.set_canvas(960,500);
         graph.set_margin(20,60,120,20);
-        //arguments for bubble chart(fileName , xAxis , yAxis , r , text)
-        graph.bubbleChart("data/market-data-2-jun-2017.csv","Last_Transaction_Date","Investment_Count","Amount","Market");
-    
+        //arguments for bubble chart function(json_data,xaxis,yaxis,radius,text_inside_circle)
+        graph.bubbleChart(data,"Last_Transaction_Date","Investment_Count","Amount","Market");
+
+        }
+    })//end of ajax
+});
 </script>
 </body>
 </html>
