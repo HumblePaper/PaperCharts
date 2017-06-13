@@ -118,6 +118,24 @@ d[yParam] = +d[yParam];
 x.domain(d3.extent(d , function(d) { return d[xParam]; }));//setting domains for x and y axes
 y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
      return d[yParam]; }));
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+  // add the X gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + gHeight + ")")
+      .call(make_x_gridlines()
+          .tickSize(-gHeight)
+          .tickFormat("")
+      )
 
         // add the Y gridlines
   outer_g.append("g")			
@@ -313,6 +331,25 @@ y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
 console.log("y",d3.extent(d , function(d1) {
      return d1[yParam]; }));
 
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+  // add the X gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + gHeight + ")")
+      .call(make_x_gridlines()
+          .tickSize(-gHeight)
+          .tickFormat("")
+      )
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
    // add the Y gridlines
   outer_g.append("g")			
       .attr("class", "grid")
@@ -413,6 +450,13 @@ function zoomed() {
                            if(d[xParam]<xz.domain()[0]) 
                         return "none";
                     });
+                       // add the Y gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat("")
+      )
 }
             var zoomRect = svg.append("rect")
       .attr("class", "zoom")
