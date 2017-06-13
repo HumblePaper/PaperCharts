@@ -561,9 +561,19 @@ y.domain(keys.slice(start,end));
 
 console.log("date :",d3.extent(date));
 
+
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(5)
+}
+
+
 var color = d3.scaleOrdinal()
   .domain(keys.slice(start,end))
   .range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099"]);
+
 
 outer_g.selectAll("g").remove();
 var Xaxis = d3.axisBottom(x);
@@ -660,6 +670,13 @@ var circle = k.append("circle")
                 .attr("opacity","0.5");
 
  }
+   // add the Y gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat("")
+      )
 }
 }
 
