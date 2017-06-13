@@ -119,6 +119,14 @@ x.domain(d3.extent(d , function(d) { return d[xParam]; }));//setting domains for
 y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
      return d[yParam]; }));
 
+        // add the Y gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat("")
+      )
+
 var Xaxis = d3.axisBottom(x);//plotting x axis
             outer_g.append("text")
                 .attr("font" , "10px sans serif")
@@ -304,6 +312,15 @@ y.domain(d3.extent(d , function(d) {console.log("y",d[yParam])
 
 console.log("y",d3.extent(d , function(d1) {
      return d1[yParam]; }));
+
+   // add the Y gridlines
+  outer_g.append("g")			
+      .attr("class", "grid")
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat("")
+      )
+
 var Xaxis = d3.axisBottom(x);
             outer_g.append("text")
                 .attr("font" , "10px sans serif")
