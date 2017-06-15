@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/chart.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  </ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/chart.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">
+/** 
+ * test comment
+*/
+function hello ()
+{
+ console.log(&quot;hello&quot;);
+} 
+(function (global, factory) {
+	typeof exports === &apos;object&apos; &amp;&amp; typeof module !== &apos;undefined&apos; ? factory(exports) :
+	typeof define === &apos;function&apos; &amp;&amp; define.amd ? define([&apos;exports&apos;], factory) :
+	(factory((global.graph = global.graph || {}))); /** use object &apos;graph&apos; to access the functions and other variables*/ 
+}(this, (function (exports) {
+
+margin_create = function (a,b,c,d){/** this function creates the margin with passed arguments to set_margin()*/
+    this.top = a;
+    this.bottom = b;
+    this.left = c;
+    this.right = d;
+
+}
+
+            var width  , height; /**width and height of the canvas*/
+
+var margin;
+var set_margin = function(w,x,y,z)
+            {
+             var a=w , b=x , c=y , d=z;
+             margin = new margin_create(a,b,c,d);/**creating margin*/
+            }
+
+var set_canvas = function(w,h)/**
+ * assign values passed to width and height parameters
+ */
+{
+    width = w;
+    height = h;
+}
+
+/** 
+ * this is the bubblechart function plots a static bubble chart with a constant radius
+ *  bubble chart
+ */
+var bubbleChart = function(data , xAxis , yAxis , r , text){
+/** 
+* @param{json} data : json data obtained from the ajax code in example function
+* @param{string} xAxis : the json key which corresponds to the value plotted in the xAxis
+* @param{string} yAxis : the json key which corresponds to the value plotted in the yAxis
+* @param{string} r :  the json key which corresponds to the radius of the bubbles plotted
+* @param{string} text :  the json key which corresponds to the text inside the bubbles plotted
+* @return {void} no return value
+*/           
+            var gWidth = width - margin.left - margin.right; //width and height of the graph
+            var gHeight = height - margin.top - margin.bottom;
+            var k,keys,i;
+            k = processData(data);//obtaing keys of the json object
+            keys = k[0];
+console.log(&quot;keys&quot;,keys);
+var xParam , yParam , radius , name , i,j,k;
+var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
+var date = [];
+
+var svg = d3.select(&quot;body&quot;).select(&quot;svg&quot;)
+.attr(&quot;width&quot; , width)
+.attr(&quot;height&quot; , height);
+
+ 
+
+var outer_g = svg.append(&quot;g&quot;).attr(&quot;class&quot;,&quot;outer_g&quot;)
+.attr(&quot;transform&quot;,&quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;);
+
+
+var x = d3.scaleTime().rangeRound([0 , gWidth]),//seeting range for x and y axes
+   y = d3.scaleLinear().rangeRound([gHeight , 0]);
+            
+var t = d3.transition().duration(750);
+
+var parseTime = d3.timeParse(&quot;%Y-%m-%d&quot;);//date format
+var d = $.parseJSON(data);
+
+for(var i = 0 ; i&lt; keys.length ; i++)//matching function parameters to the json keys
+   { 
+    if(keys[i].search(xAxis) == 0)
+    {
+        xParam = keys[i];
+        flagX=1;
+    }
+
+    if(keys[i].search(yAxis) == 0)
+    {
+        yParam = keys[i];
+        flagY=1;
+    }
+
+    if(keys[i].search(r) == 0)
+    {
+        radius = keys[i];
+        flagR=1;
+    }
+     if(keys[i].search(text) == 0)
+    {
+        name = keys[i];
+        flagN=1;
+    }
+}
+if(!flagX)
+{
+    alert(&quot;Wrong x parameter&quot;);
+}
+
+if(!flagY)
+{
+    alert(&quot;Wrong y parameter&quot;);
+}
+
+if(!flagR)
+{
+    alert(&quot;Wrong radius parameter&quot;);
+}
+
+if(!flagN)
+{
+    alert(&quot;Wrong name parameter&quot;);
+}
+/**
+ * parsing json data
+ */
+d.forEach(function(d){
+d[xParam] = parseTime(d[xParam]);
+d[radius] = +d[radius];
+d[yParam] = +d[yParam];
+});
+
+x.domain(d3.extent(d , function(d) { return d[xParam]; }));//setting domains for x and y axes
+y.domain(d3.extent(d , function(d) {console.log(&quot;y&quot;,d[yParam])
+     return d[yParam]; }));
+
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
+
+  outer_g.append(&quot;g&quot;)			
+      .attr(&quot;class&quot;, &quot;grid&quot;)
+      .attr(&quot;transform&quot;, &quot;translate(0,&quot; + gHeight + &quot;)&quot;)
+      .call(make_x_gridlines()
+          .tickSize(-gHeight)
+          .tickFormat(&quot;&quot;)
+      )
+
+  // add the Y gridlines
+  outer_g.append(&quot;g&quot;)			
+      .attr(&quot;class&quot;, &quot;grid&quot;)
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat(&quot;&quot;)
+      )
+
+var Xaxis = d3.axisBottom(x);//plotting x axis
+            outer_g.append(&quot;text&quot;)
+                .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+                .attr(&quot;y&quot; , (gHeight + 15 + margin.top))
+                .attr(&quot;x&quot; , (gWidth / 2))
+                .attr(&quot;dy&quot; , &quot;0.71em&quot;)
+                .attr(&quot;text-anchor&quot; , &quot;middle&quot;)
+                .text(xParam);
+
+var Yaxis = d3.axisLeft(y);//plotting y axis
+            outer_g.append(&quot;text&quot;)
+                .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+                .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+                .attr(&quot;y&quot;, 5-(margin.left))
+                .attr(&quot;x&quot;, 0 - (gHeight/2))
+                .attr(&quot;dy&quot;, &quot;0.71em&quot;)
+                .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+                .text(yParam);
+
+    var gX = outer_g.append(&quot;g&quot;)
+    .attr(&quot;class&quot;,&quot;xaxis&quot;)
+    .attr(&quot;transform&quot;, &quot;translate(0,&quot; + gHeight + &quot;)&quot;)
+    .call(Xaxis);
+
+var gY = outer_g.append(&quot;g&quot;)
+     .call(Yaxis);
+
+var inner_g=outer_g.append(&quot;g&quot;);
+var gi = inner_g.selectAll(&quot;g&quot;);
+var k = gi.data(d).enter().append(&quot;g&quot;);
+var circle = k.append(&quot;circle&quot;)
+                .attr(&quot;class&quot;, &quot;circle&quot;)
+                .attr(&quot;cx&quot; , function(d){ 
+                            
+                    return x(d[xParam]); })
+                .attr(&quot;cy&quot; , function(d){ return y(d[yParam]); })
+                .attr(&quot;r&quot; ,40)//&quot;rgb(50 , 154 , 188)&quot;
+                .attr(&quot;fill&quot;,function(d){ 
+                           if(d[xParam]&gt;x.domain()[0]) 
+                                return &quot;rgb(50 , 154 , 188)&quot;; 
+                            else
+                        return &quot;none&quot;;
+                    })
+                .attr(&quot;opacity&quot;,&quot;0.5&quot;);
+                 
+                 k.append(&quot;text&quot;)//text inside circle
+                 .attr(&quot;class&quot;, &quot;text&quot;)
+                .attr(&quot;x&quot; , function(d){return x(d[xParam]);})
+                .attr(&quot;y&quot; , function(d){return y(d[yParam]);})
+                .style(&quot;font-size&quot;, &quot;0.7em&quot;)
+                .attr(&quot;text-anchor&quot; , &quot;middle&quot;)
+                .text(function(d) { return d[name]; });
+
+                 k.append(&quot;title&quot;)
+                .attr(&quot;class&quot;, &quot;text&quot;)
+                .attr(&quot;pointer-events&quot;,&quot;all&quot;)
+                .html(function(d) {var str = radius +&quot; : &quot; +d[radius]+ &quot;\n&quot;+xParam+&quot; : &quot;+d[xParam]+&quot;\n&quot;+name+&quot; : &quot;+d[name]+&quot;\n&quot;+yParam+&quot; : &quot;+d[yParam];
+                    return str; });
+              
+            gi.exit().remove();
+
+            d3.selectAll(&quot;circle&quot;).on(&apos;mouseover&apos;, function() {//hover implementation
+                d3.select(this).transition(t)
+                .attr(&quot;opacity&quot;,&quot;0.7&quot;);
+                });
+            
+                d3.selectAll(&quot;circle&quot;).on(&apos;mouseout&apos;, function() {//hover implementation
+                d3.select(this).transition(t)
+                .attr(&quot;opacity&quot;,&quot;0.5&quot;);
+                });
+
+function processData(data1) {
+var json = $.parseJSON(data1);
+var k = [];
+var keys = [];
+var i=0;
+for(var key in json[0])
+{
+    keys.push(key);
+
+}
+console.log(&quot;keys&quot;,keys);
+     k.push(keys);//k[0] will be the main key
+     return k;
+
+}
+}
+
+var bubbleChartZoom = function(data , xAxis , yAxis , r , text){//tooltip not working
+ /** 
+ * this function plots a static bubble chart with a constant radius and zoomable
+ * parameters,
+ * @param {jsoon} data : json data obtained from the ajax code in example function
+ * @param {string} xAxis : the json key which corresponds to the value plotted in the xAxis
+ * @param {string} yAxis : the json key which corresponds to the value plotted in the yAxis
+ * @param {string} r :  the json key which corresponds to the radius of the bubbles plotted
+ * @param {string} text :  the json key which corresponds to the text inside the bubbles plotted
+ */                
+            var gWidth = width - margin.left - margin.right; //width and height of the graph
+            var gHeight = height - margin.top - margin.bottom;
+            var k,keys,i;
+            k = processData(data);
+            keys = k[0];
+console.log(&quot;keys&quot;,keys);
+var xParam , yParam , radius , name , i,j,k;
+var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
+var date = [];
+
+var tooltip = d3.select(&quot;body&quot;).append(&quot;div&quot;)	
+    .attr(&quot;class&quot;, &quot;hidden tooltip&quot;)				
+    .style(&quot;opacity&quot;, 0);
+
+var svg = d3.select(&quot;body&quot;).select(&quot;svg&quot;)
+.attr(&quot;width&quot; , width)
+.attr(&quot;height&quot; , height);
+
+var outer_g = svg.append(&quot;g&quot;).attr(&quot;class&quot;,&quot;outer_g&quot;)
+.attr(&quot;transform&quot;,&quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;);
+
+
+var x = d3.scaleTime().rangeRound([0 , gWidth]),
+   y = d3.scaleLinear().rangeRound([gHeight , 0]);
+            
+var t = d3.transition().duration(750);
+
+var parseTime = d3.timeParse(&quot;%Y-%m-%d&quot;);//date format
+var d = $.parseJSON(data);
+
+for(var i = 0 ; i&lt; keys.length ; i++)
+   { 
+    if(keys[i].search(xAxis) == 0)
+    {
+        xParam = keys[i];
+        flagX=1;
+    }
+
+    if(keys[i].search(yAxis) == 0)
+    {
+        yParam = keys[i];
+        flagY=1;
+    }
+
+    if(keys[i].search(r) == 0)
+    {
+        radius = keys[i];
+        flagR=1;
+    }
+     if(keys[i].search(text) == 0)
+    {
+        name = keys[i];
+        flagN=1;
+    }
+}
+if(!flagX)
+{
+    alert(&quot;Wrong x parameter&quot;);
+}
+
+if(!flagY)
+{
+    alert(&quot;Wrong y parameter&quot;);
+}
+
+if(!flagR)
+{
+    alert(&quot;Wrong radius parameter&quot;);
+}
+
+if(!flagN)
+{
+    alert(&quot;Wrong name parameter&quot;);
+}
+
+d.forEach(function(d){
+d[xParam] = parseTime(d[xParam]);
+d[radius] = +d[radius];
+d[yParam] = +d[yParam];
+});
+
+// gridlines in x axis function
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(10)
+}
+
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(10)
+}
+
+x.domain(d3.extent(d , function(d) { return d[xParam]; }));
+y.domain(d3.extent(d , function(d) {console.log(&quot;y&quot;,d[yParam])
+     return d[yParam]; }));
+
+
+
+  outer_g.append(&quot;g&quot;)			
+      .attr(&quot;class&quot;, &quot;grid&quot;)
+      .attr(&quot;transform&quot;, &quot;translate(0,&quot; + gHeight + &quot;)&quot;)
+      .call(make_x_gridlines()
+          .tickSize(-gHeight)
+          .tickFormat(&quot;&quot;)
+      )
+
+  // add the Y gridlines
+  outer_g.append(&quot;g&quot;)			
+      .attr(&quot;class&quot;, &quot;grid&quot;)
+      .call(make_y_gridlines()
+          .tickSize(-gWidth)
+          .tickFormat(&quot;&quot;)
+      )
+
+
+console.log(&quot;y&quot;,d3.extent(d , function(d1) {
+     return d1[yParam]; }));
+var Xaxis = d3.axisBottom(x);
+            outer_g.append(&quot;text&quot;)
+                .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+                .attr(&quot;y&quot; , (gHeight + 15 + margin.top))
+                .attr(&quot;x&quot; , (gWidth / 2))
+                .attr(&quot;dy&quot; , &quot;0.71em&quot;)
+                .attr(&quot;text-anchor&quot; , &quot;middle&quot;)
+                .text(xParam);
+
+var Yaxis = d3.axisLeft(y);
+            outer_g.append(&quot;text&quot;)
+                .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+                .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+                .attr(&quot;y&quot;, 5-(margin.left))
+                .attr(&quot;x&quot;, 0 - (gHeight/2))
+                .attr(&quot;dy&quot;, &quot;0.71em&quot;)
+                .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+                .text(yParam);
+
+    var gX = outer_g.append(&quot;g&quot;)
+    .attr(&quot;class&quot;,&quot;xaxis&quot;)
+    .attr(&quot;transform&quot;, &quot;translate(0,&quot; + gHeight + &quot;)&quot;)
+    .call(Xaxis);
+
+var gY = outer_g.append(&quot;g&quot;)
+     .call(Yaxis);
+
+
+    
+
+var zoom = d3.zoom()
+    .scaleExtent([1/8, 8])
+    .translateExtent([[-gWidth, -Infinity], [2 * gWidth, Infinity]])
+    .extent([[0, 0], [gWidth, gHeight]])
+    .on(&quot;zoom&quot;, zoomed);
+
+var inner_g=outer_g.append(&quot;g&quot;);
+var gi = inner_g.selectAll(&quot;g&quot;);
+var k = gi.data(d).enter().append(&quot;g&quot;);
+var circle = k.append(&quot;circle&quot;)
+                .attr(&quot;class&quot;, &quot;circle&quot;)
+                .attr(&quot;cx&quot; , function(d){ 
+                            
+                    return x(d[xParam]); })
+                .attr(&quot;cy&quot; , function(d){ return y(d[yParam]); })
+                .attr(&quot;r&quot; ,40)//&quot;rgb(50 , 154 , 188)&quot;
+                .attr(&quot;fill&quot;,function(d){ 
+                           if(d[xParam]&gt;x.domain()[0]) 
+                                return &quot;rgb(50 , 154 , 188)&quot;; 
+                            else
+                        return &quot;none&quot;;
+                    })
+                .attr(&quot;opacity&quot;,&quot;0.5&quot;).on(&quot;mouseover&quot;, function (d) {
+          tooltip.classed(&apos;hidden&apos;, false)
+            .attr(&apos;style&apos;, &apos;left:&apos; + (d3.event.clientX + 20) + &apos;px; top:&apos; + (d3.event.clientY - 20) + &apos;px&apos;)
+            .html(function(d) {var str = radius +&quot; : &quot; +d[radius]+ &quot;\n&quot;+xParam+&quot; : &quot;+d[xParam]+&quot;\n&quot;+name+&quot; : &quot;+d[name]+&quot;\n&quot;+yParam+&quot; : &quot;+d[yParam];
+                    return str; });
+        })					
+        .on(&quot;mouseout&quot;,function () {
+          tooltip.classed(&apos;hidden&apos;, true);
+        });
+                 
+                 k.append(&quot;text&quot;)//text inside circle
+                 .attr(&quot;class&quot;, &quot;text&quot;)
+                .attr(&quot;x&quot; , function(d){return x(d[xParam]);})
+                .attr(&quot;y&quot; , function(d){return y(d[yParam]);})
+                .style(&quot;font-size&quot;, &quot;0.7em&quot;)
+                .attr(&quot;text-anchor&quot; , &quot;middle&quot;)
+                .text(function(d) { return d[name]; });
+            gi.exit().remove();
+
+function zoomed() {
+  var xz = d3.event.transform.rescaleX(x);
+  gX.call(Xaxis.scale(xz));
+
+        svg.selectAll(&quot;.circle&quot;).data(d)
+        .attr(&quot;cx&quot;, function(d){ return xz(d[xParam]); })
+        .attr(&quot;cy&quot;, function(d){ return y(d[yParam]); })
+        .attr(&quot;fill&quot;,function(d){ 
+                           if(d[xParam]&gt;xz.domain()[0]) 
+                                return &quot;rgb(50 , 154 , 188)&quot;; 
+                            else
+                        return &quot;none&quot;;
+                    });
+
+        svg.selectAll(&quot;.text&quot;)
+        .attr(&quot;x&quot;, function(d){ return xz(d[xParam]); })
+        .attr(&quot;y&quot;, function(d){ return y(d[yParam]); })
+        .attr(&quot;fill&quot;,function(d){ 
+                           if(d[xParam]&lt;xz.domain()[0]) 
+                        return &quot;none&quot;;
+                    });
+}
+            var zoomRect = svg.append(&quot;rect&quot;)
+      .attr(&quot;class&quot;, &quot;zoom&quot;)
+      .attr(&quot;fill&quot;,&quot;none&quot;)
+      .attr(&quot;pointer-events&quot;,&quot;all&quot;)
+      .attr(&quot;width&quot;, width)
+      .attr(&quot;height&quot;, height)
+      .attr(&quot;transform&quot;, &quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;)
+      .call(zoom);
+
+function processData(data1) {
+var json = $.parseJSON(data1);
+var k = [];
+var keys = [];
+var i=0;
+for(var key in json[0])
+{
+    keys.push(key);
+
+}
+console.log(&quot;keys&quot;,keys);
+     k.push(keys);//k[0] will be the main key
+     return k;
+
+}
+}
+
+var timeChart = function(data , xAxis , yAxis , r , text){//tooltip not working
+ /** 
+ * this function plots a static bubble chart with a constant radius and zoomable
+ * parameters,
+ * @param {json}data : json data obtained from the ajax code in example function
+ * @param {string}xAxis : the json key which corresponds to the value plotted in the xAxis
+ * @param {string}yAxis : the json key which corresponds to the value plotted in the yAxis
+ * @param {string}r :  the json key which corresponds to the radius of the bubbles plotted
+ * @param {string}text :  the json key which corresponds to the text inside the bubbles plotted
+ */   
+            var gWidth = width - margin.left - margin.right; //width and height of the graph
+            var gHeight = height - margin.top - margin.bottom;
+            var k,keys,data_keys = [];
+            k = processData(data);
+            keys = k[0];
+            data_keys = k[1];
+
+
+var xParam , yParam , radius , name , i,j;
+var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
+var date = [];
+var start = 0, end = 5;
+var div = d3.select(&quot;body&quot;).append(&quot;div&quot;)
+            .attr(&quot;id&quot;,&quot;filter&quot;);
+var svg = d3.select(&quot;body&quot;).append(&quot;svg&quot;)
+.attr(&quot;width&quot; , width)
+.attr(&quot;height&quot; , height);
+
+d3.select(&quot;body&quot;).append(&quot;div&quot;)
+            .attr(&quot;id&quot;,&quot;filter&quot;);
+var filter = d3.select(&quot;#filter&quot;).append(&quot;p&quot;).attr(&quot;font-size&quot;,10).html(&quot;Index Filter : &quot;);
+var dl = filter.append(&quot;dl&quot;)
+                 .attr(&quot;class&quot;, &quot;dropdown&quot;);
+                 var dt = dl.append(&quot;dt&quot;);
+var a = dt.append(&quot;a&quot;).attr(&quot;href&quot;,&quot;#&quot;).append(&quot;span&quot;).attr(&quot;class&quot;,&quot;hida&quot;).html(&quot;sectors&quot;);
+var ap = a.append(&quot;p&quot;).attr(&quot;class&quot;,&quot;multiset&quot;);
+
+var dd = dl.append(&quot;dd&quot;);
+var div = dd.append(&quot;div&quot;).attr(&quot;class&quot;,&quot;multiSelect&quot;);
+var ul = div.append(&quot;ul&quot;);
+var li = ul.selectAll(&quot;li&quot;).data(keys).enter().append(&quot;li&quot;);
+li.append(&quot;input&quot;).attr(&quot;type&quot;,&quot;checkbox&quot;)
+.attr(&quot;value&quot;,function(d){return d;});
+li.append(&quot;span&quot;).html(function(d){return d;});
+
+/*list of options for filtering the graph based on index in the json file*/
+
+
+
+// var outer_g = svg.append(&quot;g&quot;).attr(&quot;class&quot;,&quot;outer_g&quot;)
+// .attr(&quot;transform&quot;,&quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;);
+
+// //selectiing type of scales and its ranges for x and y axes
+// var x = d3.scaleTime().rangeRound([0 , gWidth]),
+//     y = d3.scaleBand().rangeRound([gHeight , 0]).padding(0.1);
+            
+// var t = d3.transition().duration(750);
+
+// var parseTime = d3.timeParse(&quot;%Y-%m-%d&quot;);//date format
+// var d = $.parseJSON(data);
+
+
+// for(var i = 0 ; i&lt; data_keys.length ; i++)
+//    { 
+//        if(data_keys[i]==&quot;date&quot;)
+//     {
+//         d[keys[1]].data[1][data_keys[i]] = parseTime(d[keys[1]].data[1][data_keys[i]]);
+//         console.log(&quot;date&quot;, d[keys[1]].data[1][data_keys[i]]);
+//     }
+
+//     if(data_keys[i].search(xAxis) == 0)
+//     {
+//         xParam = data_keys[i];
+//         flagX=1;
+//     }
+//     if(flagY == 0)
+//     k = Object.keys(d[keys[1]]);
+//     console.log(k);
+//     for(j=0;j&lt;k.length;j++)
+//     {
+//     if(k[j].search(yAxis) == 0 &amp;&amp; flagY==0)
+//     {
+//         yParam = k[j];
+//         flagY=1;
+//         console.log(&quot;success&quot;);
+//     }
+//     }
+//     if(data_keys[i].search(r) == 0)
+//     {
+//         radius = data_keys[i];
+//         flagR=1;
+//     }
+//      if(data_keys[i].search(text) == 0)
+//     {
+//         name = data_keys[i];
+//         flagN=1;
+//     }
+// }
+// if(!flagX)
+// {
+//     alert(&quot;Wrong x parameter&quot;);
+// }
+
+// if(!flagY)
+// {
+//     alert(&quot;Wrong y parameter&quot;);
+// }
+
+// if(!flagR)
+// {
+//     alert(&quot;Wrong radius parameter&quot;);
+// }
+
+// if(!flagN)
+// {
+//     alert(&quot;Wrong name parameter&quot;);
+// }
+
+//  dropDown.on(&quot;change&quot;, function() {
+//        start = parseInt(this.value);
+//        end = start + 5;
+//        plot(start,end);
+//   });
+
+// function plot(start,end)
+// {
+// console.log(start,&quot;,&quot;,end);
+
+// for(i = start ; i&lt; end ; i++)//limited to 5
+// for(j=0;j&lt;(d[keys[i]].data).length;j++)
+// date.push(parseTime(d[keys[i]].data[j][xParam]));
+
+// x.domain(d3.extent(date));
+
+// var z;
+
+// y.domain(keys.slice(start,end));
+
+// console.log(&quot;date :&quot;,d3.extent(date));
+
+// var color = d3.scaleOrdinal()
+//   .domain(keys.slice(start,end))
+//   .range([&quot;#3366cc&quot;, &quot;#dc3912&quot;, &quot;#ff9900&quot;, &quot;#109618&quot;, &quot;#990099&quot;]);
+
+// outer_g.selectAll(&quot;g&quot;).remove();
+// var Xaxis = d3.axisBottom(x);
+//             outer_g.append(&quot;text&quot;)
+//                 .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+//                 .attr(&quot;y&quot; , (gHeight + 15 + margin.top))
+//                 .attr(&quot;x&quot; , (gWidth / 2))
+//                 .attr(&quot;dy&quot; , &quot;0.71em&quot;)
+//                 .attr(&quot;text-anchor&quot; , &quot;middle&quot;)
+//                 .text(xParam);
+
+// var Yaxis = d3.axisLeft(y);
+//             outer_g.append(&quot;text&quot;)
+//                 .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+//                 .attr(&quot;font&quot; , &quot;10px sans serif&quot;)
+//                 .attr(&quot;y&quot;, 5-(margin.left))
+//                 .attr(&quot;x&quot;, 0 - (gHeight/2))
+//                 .attr(&quot;dy&quot;, &quot;0.71em&quot;)
+//                 .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+//                 .text(yParam);
+
+//     var gX = outer_g.append(&quot;g&quot;)
+//     .attr(&quot;class&quot;,&quot;xaxis&quot;)
+//     .attr(&quot;transform&quot;, &quot;translate(0,&quot; + gHeight + &quot;)&quot;)
+//     .call(Xaxis);
+// var gY = outer_g.append(&quot;g&quot;)
+//      .call(Yaxis);
+// var inner_g=outer_g.append(&quot;g&quot;);
+// var zoom = d3.zoom()
+//     .scaleExtent([1/8, 4])
+//     .translateExtent([[-gWidth, -Infinity], [2 * gWidth, Infinity]])
+//     .on(&quot;zoom&quot;, zoomed);
+
+//     var zoomRect = svg.append(&quot;rect&quot;)
+//       .attr(&quot;class&quot;, &quot;zoom&quot;)
+//       .attr(&quot;fill&quot;,&quot;none&quot;)
+//       .attr(&quot;border&quot;,&quot;1px solid&quot;)
+//       .attr(&quot;pointer-events&quot;,&quot;all&quot;)
+//       .attr(&quot;width&quot;, gWidth)
+//       .attr(&quot;height&quot;, gHeight)
+//       .attr(&quot;transform&quot;, &quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;)
+//       .call(zoom);
+// zoomRect.call(zoom.transform, d3.zoomIdentity);
+// var gi = inner_g.selectAll(&quot;g&quot;);
+// for(i = start ; i&lt; end ; i++)
+// {
+//    z=d[keys[i]];
+
+// var k = gi.data(z.data).enter().append(&quot;g&quot;);
+// var circle = k.append(&quot;circle&quot;)
+//                 .attr(&quot;class&quot;, &quot;circle&quot;)
+//                 .attr(&quot;cx&quot; , function(d){ 
+                            
+//                     return x(parseTime(d[xParam])); })
+//                 .attr(&quot;cy&quot; , y(z[yParam])+(y.bandwidth())/2)
+//                 .transition(t)
+//                 .attr(&quot;r&quot; , 10)
+//                 .attr(&quot;fill&quot;,function(d){ 
+//                            if(parseTime(d[xParam])&gt;x.domain()[0]) 
+//                                 return color(z[yParam]); 
+//                             else
+//                         return &quot;none&quot;;
+//                     })
+//                 .attr(&quot;opacity&quot;,&quot;0.5&quot;);
+              
+//             gi.exit().remove();
+//  }
+// function zoomed() {
+//   var xz = d3.event.transform.rescaleX(x);
+//   gX.call(Xaxis.scale(xz));
+// inner_g.selectAll(&quot;g&quot;).remove();
+//  inner_g=outer_g.append(&quot;g&quot;);
+
+// var gi = inner_g.selectAll(&quot;g&quot;);
+// for(i = start ; i&lt; end ; i++)
+// {
+//    z=d[keys[i]];
+
+// var k = gi.data(z.data).attr(&quot;class&quot;, &quot;entity&quot;).enter().append(&quot;g&quot;);
+// var circle = k.append(&quot;circle&quot;)
+//                 .attr(&quot;class&quot;, &quot;circle&quot;)
+//                 .attr(&quot;cx&quot; , function(d){ 
+                    
+//                     return xz(parseTime(d[xParam])); })
+//                 .attr(&quot;cy&quot; , y(z[yParam])+(y.bandwidth())/2)
+//                 .transition(t)
+//                 .attr(&quot;r&quot; , 10)
+//                 .attr(&quot;fill&quot;,function(d){ 
+//                            if(parseTime(d[xParam])&gt;xz.domain()[0]) 
+//                                 return color(z[yParam]); 
+//                             else
+//                         return &quot;none&quot;;
+//                     })
+//                 .attr(&quot;opacity&quot;,&quot;0.5&quot;);
+
+//  }
+// }
+// }
+
+
+
+function processData(data1) {
+var json = $.parseJSON(data1);
+var k = [];
+var keys = [];
+var data_keys=[];
+var i=0;
+for(var key in json)
+{
+    keys.push(key);
+}
+for(var i in  json[keys[1]].data[0])
+    data_keys.push(i);
+     k.push(keys);//k[0] will be the main key
+     k.push(data_keys);//k[1] will be the key for data object
+     return k;
+
+}
+}
+
+  $(&quot;.dropdown dt a&quot;).on(&apos;click&apos;, function () {
+    $(&quot;.dropdown dd ul&quot;).slideToggle(&apos;fast&apos;);
+});
+
+$(&quot;.dropdown dd ul li a&quot;).on(&apos;click&apos;, function () {
+    $(&quot;.dropdown dd ul&quot;).hide();
+});
+
+function getSelectedValue(id) {
+    return $(&quot;#&quot; + id).find(&quot;dt a span.value&quot;).html();
+}
+
+$(document).bind(&apos;click&apos;, function (e) {
+    var $clicked = $(e.target);
+    if (!$clicked.parents().hasClass(&quot;dropdown&quot;)) $(&quot;.dropdown dd ul&quot;).hide();
+});
+
+var selected = [];
+
+$(&apos;.mutliSelect input[type=&quot;checkbox&quot;]&apos;).on(&apos;click&apos;, function () {
+
+    var title = $(this).closest(&apos;.mutliSelect&apos;).find(&apos;input[type=&quot;checkbox&quot;]&apos;).val(),
+        title = $(this).val() + &quot;,&quot;;
+selected.append(title);
+        console.log(selected);
+    if ($(this).is(&apos;:checked&apos;)) {
+        
+        
+        $(&quot;.hida&quot;).hide();
+    } else {
+        var i;
+        $(&apos;span[title=&quot;&apos; + title + &apos;&quot;]&apos;).remove();
+        var ret = $(&quot;.hida&quot;);
+        $(&apos;.dropdown dt a&apos;).append(ret);
+        i = selected.indexOf(title);
+        if(i&gt;-1)
+        selected.splice(i,1);
+        console.log(selected);
+    }
+    console.log(selected);
+});
+
+var heatMap = function(data,area,color,name){
+    /** 
+    * this function plots a heat map using the above given parameters,
+    * @param {json} data : the json object obtained after passing the json file to ajax code in the example
+    * @param {string} area : the json key which corresponds to the area of the cell in the heatmap
+    * @param {string} color : the json key which correspond to the color depth of the cell
+    * @param {string} name : the json key which corresponds to the cell name(i.e. text inside the cell)
+    */
+var keys = [],i;
+console.log(&quot;data1&quot;,$.parseJSON(data));
+keys = processData(data);
+
+data = $.parseJSON(data);
+
+var colorParam , areaParam ,nameParam;
+var flagA=0 , flagC=0 , flagN = 0;
+
+for(i = 0 ; i&lt; keys.length ; i++)//mapping parameters to keys form the json file 
+{
+    if(keys[i].search(area) == 0)
+    {
+        areaParam = keys[i];
+        flagA=1;
+    }
+    if(keys[i].search(color) == 0)
+    {
+        colorParam = keys[i];
+        flagC=1;
+    }
+    if(keys[i].search(name) == 0)
+    {
+        nameParam = keys[i];
+        flagN=1;
+    }
+        }  
+
+            if(!flagC)
+            {
+                alert(&quot;Wrong color parameter&quot;);
+            }
+
+            if(!flagA)
+            {
+                alert(&quot;Wrong area parameter&quot;);
+            }
+
+            if(!flagN)
+            {
+                alert(&quot;Wrong name parameter&quot;);
+            } 
+      width = width - margin.right - margin.left;
+      height = height - margin.top - margin.bottom;
+      
+  var svg = d3.select(&quot;body&quot;)//creating the canvas with the specified width and height
+            .append(&quot;svg&quot;);
+
+            svg.attr(&quot;width&quot;,width);
+            svg.attr(&quot;height&quot;,height);
+            
+            
+    var format = d3.format(&quot;,d&quot;);//used to format the no.s(grouping to 1000&apos;s using &apos;,&apos;)
+
+    var color = d3.interpolateRgb(&quot;#FF0000&quot;,&quot;#010000&quot;);//creating color scale from &quot;#FF0000&quot; to &quot;#010000&quot;
+
+    var treemap = d3.treemap()
+        .tile(d3.treemapResquarify)
+        .size([width, height])
+        .round(true)
+        .paddingInner(1);
+    
+    var tot_inv = 0; 
+
+                console.log(&quot;data&quot;,data);
+            var root = d3.hierarchy(data)//creating the root for the tree from the json data
+            .eachBefore(function(d) {
+                d.data.id = (d.parent ? d.parent.data.id + &quot;.&quot; : &quot;&quot;) + d.data[nameParam]; })
+            .sum(function(d) {console.log(d[areaParam],d[colorParam],&quot;name : &quot;,d[nameParam]);
+                return d[areaParam];})
+            .sort(function(a, b) { return b[areaParam] - a[areaParam]; });
+
+            
+            
+            
+            treemap(root);//creating the tree from the json data
+            
+            console.log(&quot;treemap&quot;,treemap(root));
+
+            var cell = svg.selectAll(&quot;g&quot;)//creating data cells
+              .data(root.leaves())
+              .enter().append(&quot;g&quot;)
+                .attr(&quot;transform&quot;, function(d) { return &quot;translate(&quot; + d.x0 + &quot;,&quot; + d.y0 + &quot;)&quot;; });
+            
+            var rect = cell.append(&quot;rect&quot;)//creating rectangles to data cells
+                .attr(&quot;id&quot;, function(d) {tot_inv += d.data[colorParam]; 
+                    return d.data.id; })
+                .attr(&quot;width&quot;, function(d) { console.log(&quot;x,y &quot;,d.y1 - d.y0);
+                    return d.x1 - d.x0; })
+                .attr(&quot;height&quot;, function(d) { 
+                    return d.y1 - d.y0; })
+                .attr(&quot;fill&quot;, function(d) {
+                     return color((d.data[colorParam]/tot_inv)*10); });
+            cell.append(&quot;clipPath&quot;)
+                .attr(&quot;id&quot;, function(d) { return &quot;clip-&quot; + d.data.id; })
+              .append(&quot;use&quot;)
+                .attr(&quot;xlink:href&quot;, function(d) { return &quot;#&quot; + d.data.id; });
+            console.log(&quot;total in script &quot;,tot_inv);
+            cell.append(&quot;text&quot;)//data cell text description
+                .attr(&quot;clip-path&quot;, function(d) { return &quot;url(#clip-&quot; + d.data.id + &quot;)&quot;; })
+              .selectAll(&quot;tspan&quot;)
+                .data(function(d) { return d.data[nameParam].split(/(?=[A-Z][^A-Z])/g); })
+              .enter().append(&quot;tspan&quot;)
+                .attr(&quot;x&quot;,3)
+                .attr(&quot;y&quot;, function(d, i) { return 20 + i * 10; })
+                .attr(&quot;fill&quot;,&quot;white&quot;)
+                .attr(&quot;text-anchor&quot;, &quot;start&quot;)
+                .attr(&quot;font-size&quot; , &quot;12px&quot;)
+                .text(function(d) { return d; });
+            
+            cell.append(&quot;title&quot;)//tool tip inside data cell
+                .text(function(d) { var str = &quot;Market : &quot; + d.data[nameParam] + &quot;\nAmount : &quot; + format(d.data[areaParam]) + &quot;\nLast Transaction Date : &quot; + d.data.Last_Transaction_Date + &quot;\nInvestment Count : &quot; + d.data[colorParam];
+                    return str; });
+
+function processData(data) {//function to obtain keys of json object
+var json = $.parseJSON(data);
+var keys = [];
+for(var key in json[&quot;children&quot;][0])
+{
+    keys.push(key);
+    
+}
+
+     return keys;
+}
+
+}//end of heatmap
+
+
+
+exports.set_margin = set_margin;
+exports.set_canvas = set_canvas;
+exports.width = width;
+exports.height = height;
+exports.bubbleChartZoom = bubbleChartZoom;
+exports.bubbleChart = bubbleChart;
+exports.heatMap = heatMap; 
+exports.timeChart = timeChart;
+
+Object.defineProperty(exports, &apos;__esModule&apos;, { value: true });
+})));
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

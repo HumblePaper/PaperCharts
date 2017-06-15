@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    
+.canton-boundary {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+
+.d3-tip {
+			  line-height: 1;
+			  font-weight: bold;
+			  padding: 12px;
+			  background: black;
+			  color: #fff;
+			  border-radius: 2px;
+			  opacity: 0.001%;
+			}
+			.d3-tip:after {
+			  box-sizing: border-box;
+			  display: inline;
+			  font-size: 10px;
+			  width: 100%;
+			  line-height: 1;
+			  color: black;
+			  content: "\25BC";
+			  position: absolute;
+			  text-align: center;
+			  opacity: 0.001%;
+			}
+
+			.d3-tip.n:after {
+			  margin: -1px 0 0 0;
+			  top: 100%;
+			  left: 0;
+			  opacity: 0.001%;
+			}
+			.area:hover {
+				fill: brown;
+			}
+    </style>
+</head>
+<body>
+<svg></svg>
+<script src="lib/jquery-3.2.1.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="src/chart.js"></script>
+<script>
+        $(document).ready(function() {//ajax code to get key values for map
+    $.ajax({
+        type: "GET",
+        url: "data/india.json",//path of json data file from which json object is obtained
+        dataType: "text",
+        success: function(data1) {
+    $(document).ready(function() {//ajax code to get key values for pins
+    $.ajax({
+        type: "GET",
+        url: "data/pins_data.csv",//path of json data file from which json object is obtained
+        dataType: "text",
+        success: function(data2) {
+                graph.set_canvas(960,900);//set canvas width and height
+                graph.set_margin(20,60,120,20);
+                //arguments for map function(json_data(map),json_data(pins),area,color_depth,name)
+                graph.map(data1,data2);
+}
+    })//end of ajax2
+}); 
+        
+}
+    })//end of ajax1
+}); 
+
+</script>
+</body>
+</html>
