@@ -898,8 +898,115 @@ for(var key in json["children"][0])
 
 }//end of heatmap
 
+var map = function(data1 , data2)
+{
+data1 = $.parseJSON(data1);
+ data2 = $.parseJSON(data2);
+width = width - margin.right - margin.left;
+height = height - margin.top - margin.bottom;
+
+// var projection = d3.geo.mercator().scale(10000).translate([-1300,100]);
+// var path = d3.geo.path()
+//     .projection(projection);
+var color = d3.interpolateRgb("#FF0000","#010000");
+var projection = d3.geoMercator();
+
+      var path = d3.geoPath()
+          .projection(projection)
+          .pointRadius(2);
+
+      var svg = d3.select("body").append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+      var g = svg.append("g");
+
+var boundary = centerZoom(data1);
+drawSubUnits(data1);
+drawOuterBoundary(data1, boundary);
+
+function centerZoom(data){
+        var o = topojson.mesh(data, data.objects.bbmpwards, function(a, b) { return a === b; });
+        projection
+            .scale(1)
+            .translate([0, 0]);
+
+        var b = path.bounds(o),
+            s = 1 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+            t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+
+        projection
+            .scale(s)
+            .translate(t);
+
+        return o;
+      }
+
+      function drawOuterBoundary(data, boundary){
+        g.append("path")
+            .datum(boundary)
+            .attr("d", path)
+            .attr("class", "subunit-boundary")
+            .attr("fill","none")
+                    .attr("stroke","black")
+                    .attr("stroke-linejoin","round");
+      }
+function drawSubUnits(data){
+        g.selectAll(".subunit")
+            .data(topojson.feature(data, data.objects.bbmpwards).features)
+          .enter().append("path")
+            .attr("class", "subunit")
+            .attr("d", path)
+            .attr("fill","none")
+                    .attr("stroke","black");
+      }
+  tot_inv = 0;
+data2.forEach(function(d){
+      tot_inv+=d.investments;
+  }) 
+  console.log("out",tot_inv);          
+// var svg = d3.select("body").append("svg")
+//     .attr("viewBox", "0 0 "+width+" "+height)
+// 	 .attr("preserveAspectRatio", "xMidYMid meet");
+
+// var cantons = topojson.feature(data1, data1.objects.bbmpwards);
+			
+              //  console.log(cantons.features);
+var count = 0 ;
+// var group = svg.selectAll("g")
+// 				.data(cantons.features)
+// 				.enter()
+// 				.append("g");
+
+// var areas=group.append("path")
+// 					.attr("d", path)
+// 					.attr("class", "area")
+//                     .attr("fill","red")
+//                     .attr("stroke","blue");
+				 
+                        svg.selectAll(".pin")
+						  .data(data2)
+						  .enter().append("circle", ".pin")
+						  .attr("r", 5)
+                          .attr("fill",function(d){
+                              console.log(d.name)
+                                  console.log((d.investments/tot_inv)*100);
+                                  return color((d.investments/tot_inv)*100);})
+						  .attr("transform", function(d) {
+    						  return "translate(" + projection([
+							  d.location.longitude,
+							  d.location.latitude
+							]) + ")";
+						  })
+						  .append("title")
+                          .text(function(d) {
+					return ("Name : "+d.name+"\nInvestments : "+d.investments);
+							});
+
+}//end of map function
 
 
+exports.map = map;
 exports.set_margin = set_margin;
 exports.set_canvas = set_canvas;
 exports.width = width;
