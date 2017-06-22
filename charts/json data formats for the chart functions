@@ -97,16 +97,10 @@ Format :
         "id": 5526,
         "name": "Share India Commodity Brokers"
       },
-      {
-        "investments": 1,
-        "id": 5527,
-        "name": "Creation Investments"
-      },
-      {
-        "investments": 2,
-        "id": 5530,
-        "name": "4B Capital"
-      }
+      .
+      .
+      .
+      .
     ],
     "id": 4
   },
