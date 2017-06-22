@@ -8,7 +8,6 @@
   stroke-opacity: 0.4;
   shape-rendering: crispEdges;
 }
-
 .grid path {
   stroke-width: 0;
 }
@@ -20,7 +19,7 @@
 <script src='lib/d3.min.js'></script>
 <script src='lib/moment.js'></script>
 
-<script src="chart.js"></script>
+<script src="src/chart.js"></script>
 <script>
             $(document).ready(function() {//ajax code to get key values
     $.ajax({
@@ -29,11 +28,9 @@
         dataType: "text",
         success: function(data) {
               
-
         graph.set_canvas(960,500);
         graph.set_margin(20,60,120,20);
         graph.timeChart(data,"date","name","amount","brand");
-
         }
     })//end of ajax
 }); 
