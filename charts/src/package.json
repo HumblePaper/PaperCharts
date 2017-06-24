@@ -1,0 +1,17 @@
+{
+  "name": "chart-library",
+  "version": "1.0.0",
+  "description": "A javascript library to create a variety of charts",
+  "devDependencies": {
+    "gitbook-cli": "^2.3.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-gitbook": "^1.5.0",
+    "grunt-jsdoc": "^2.1.0",
+    "grunt-jsdoc-to-markdown": "^3.0.0"
+  },
+  "dependencies": {
+    "gitbook": "^3.2.2",
+    "require": "^2.4.20"
+  }
+}
