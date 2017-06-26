@@ -611,6 +611,6 @@ This will create the following graph.
 
 Refer the example html file : index_network.html for more details
 
-####Links
+### Links
 [JSON Data Formats](JSON.md)
 [Chart Function Definitions](function_definitions.md)
