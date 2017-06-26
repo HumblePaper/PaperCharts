@@ -115,6 +115,6 @@ this function plots a network of nodes of startups and their investors
 | investor_id_key | <code>string</code> | : the json key which corresponds to the unique id of the investor node |
 
 
- ####Links
+ ### Links
  [Home Page](README.md)
  [JSON Data Formats](JSON.md)
