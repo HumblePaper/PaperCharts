@@ -114,5 +114,5 @@ Format :
 ```
  
  ### Links
- [Home Page](README.md)
- [Function Definitions](function_definitions.md)
+ * [Home Page](README.md)
+ * [Function Definitions](function_definitions.md)
