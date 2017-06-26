@@ -116,5 +116,5 @@ this function plots a network of nodes of startups and their investors
 
 
  ### Links
- [Home Page](README.md)
- [JSON Data Formats](JSON.md)
+ * [Home Page](README.md)
+ * [JSON Data Formats](JSON.md)
