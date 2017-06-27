@@ -33,26 +33,86 @@ div.tooltip {
 <svg></svg>
 <script src="lib/jquery-3.2.1.js"></script>
 <script src='lib/d3.min.js'></script>
-<script src='lib/moment.js'></script>
-<!--<script src="lib/d3-tip.js"></script>-->
+<!--<script src='lib/moment.js'></script>-->
 <script src="src/chart.js"></script>
 <script>
-            $(document).ready(function() {//ajax code to get key values
-    $.ajax({
-        type: "GET",
-        url: "data/market-data-2-jun-2017.json",//path of json data file
-        dataType: "text",
-        success: function(data) {
+    // $(document).ready(function() {//ajax code to get key values
+    // $.ajax({
+    //     type: "GET",
+    //     url: "data/market-data-2-jun-2017.json",//path of json data file
+    //     dataType: "text",
+    //     success: function(data) {
               
-
+data = [
+  {
+		"Market": "HR Tech",
+		"Amount": "2095630",
+		"Last_Transaction_Date": "2016-10-01",
+		"Investment_Count": "2"
+	},
+	{
+		"Market": "Online Hypermarket",
+		"Amount": "109672354043",
+		"Last_Transaction_Date": "2016-10-03",
+		"Investment_Count": "121"
+	},
+	{
+		"Market": "Coworking",
+		"Amount": "539838101",
+		"Last_Transaction_Date": "2016-10-28",
+		"Investment_Count": "14"
+	},
+	{
+		"Market": "Online Grocery",
+		"Amount": "13085351803",
+		"Last_Transaction_Date": "2016-11-05",
+		"Investment_Count": "139"
+	},
+	{
+		"Market": "K12 Learning",
+		"Amount": "6705605708",
+		"Last_Transaction_Date": "2016-11-21",
+		"Investment_Count": "34"
+	},
+	{
+		"Market": "Big Data Analysis",
+		"Amount": "65395558",
+		"Last_Transaction_Date": "2017-03-28",
+		"Investment_Count": "15"
+	},
+	{
+		"Market": "Financial Services",
+		"Amount": "5388747156",
+		"Last_Transaction_Date": "2017-03-29",
+		"Investment_Count": "91"
+	},
+	{
+		"Market": "On-demand Logistics",
+		"Amount": "167133159",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "75"
+	},
+	{
+		"Market": "Online truck aggregation",
+		"Amount": "50299670",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "69"
+	},
+	{
+		"Market": "Receipe Box",
+		"Amount": "257891312",
+		"Last_Transaction_Date": "2017-03-30",
+		"Investment_Count": "43"
+	}
+    ];
         graph.set_canvas(960,500);
-        graph.set_margin(20,60,120,20);
+        graph.set_margin(60,60,60,60);
         //arguments for bubble chart function(json_data,xaxis,yaxis,radius,text_inside_circle)
         graph.bubbleChartZoom(data,"Last_Transaction_Date","Investment_Count","Amount","Market");
 
-        }
-    })//end of ajax
-});
+//         }
+//     })//end of ajax
+// });
 </script>
 </body>
 </html>

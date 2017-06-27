@@ -17,23 +17,181 @@
 <body>
 <script src="lib/jquery-3.2.1.js"></script>
 <script src='lib/d3.min.js'></script>
-<script src='lib/moment.js'></script>
-
+<!--<script src='lib/moment.js'></script>-->
 <script src="src/chart.js"></script>
 <script>
-            $(document).ready(function() {//ajax code to get key values
-    $.ajax({
-        type: "GET",
-        url: "data/sector-timeline-graph-dataset-jun-7.json",//path of json data file
-        dataType: "text",
-        success: function(data) {
-              
+    //         $(document).ready(function() {//ajax code to get key values
+    // $.ajax({
+    //     type: "GET",
+    //     url: "data/sector-timeline-graph-dataset-jun-7.json",//path of json data file
+    //     dataType: "text",
+    //     success: function(data) {
+          data = {  
+   "Home Salon":{  
+      "amount":68819229,
+      "data":[  
+
+      ],
+      "name":"Home Salon"
+   },
+   "Skill development":{  
+      "amount":2095630,
+      "data":[  
+         {  
+            "brand_logo":null,
+            "brand":"TapChief",
+            "entity":"Pilani Experts Technology Labs Private Limited",
+            "amount":997815,
+            "photo":"",
+            "date":"2016-10-01",
+            "investor_name":"Radhakrishna Nalabothu"
+         },
+         {  
+            "brand_logo":null,
+            "brand":"TapChief",
+            "entity":"Pilani Experts Technology Labs Private Limited",
+            "amount":997815,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/01b1ecf7-6bed-4f28-8899-8ef363d5fb7b/aprameya_radhakrishna.resize_150x150.jpg",
+            "date":"2016-10-01",
+            "investor_name":"Aprameya Radhakrishna"
+         }
+      ],
+      "name":"Skill development"
+   },
+   "Online Hypermarket":{  
+      "amount":109672354043,
+      "data":[  
+
+      ],
+      "name":"Online Hypermarket"
+   },
+   "Personal Assistant":{  
+      "amount":287698360,
+      "data":[  
+         {  
+            "brand_logo":null,
+            "brand":"Vymo",
+            "entity":"Vymo Solutions Private Limited",
+            "amount":672000,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/f49c5d76-d950-478e-9ebb-1ef39f8c180b/sequoialogo.crop_179x179_8,13.resize_150x150.jpg",
+            "date":"2016-12-10",
+            "investor_name":"Sequoia Capital"
+         },
+         {  
+            "brand_logo":null,
+            "brand":"Vymo",
+            "entity":"Vymo Solutions Private Limited",
+            "amount":286962360,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/f49c5d76-d950-478e-9ebb-1ef39f8c180b/sequoialogo.crop_179x179_8,13.resize_150x150.jpg",
+            "date":"2016-12-10",
+            "investor_name":"Sequoia Capital"
+         }
+      ],
+      "name":"Personal Assistant"
+   },
+   "Exam Prep":{  
+      "amount":8445724628,
+      "data":[  
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":121100,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/8d236eae-476d-4177-b4e3-bfc2c9433aaf/ScreenShot20170410at65049PM.crop_132x85_0,4.preview.png",
+            "date":"2015-12-19",
+            "investor_name":"Blume Ventures"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":242200,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/5ccdc243-47e5-457c-afeb-408eab16b5dd/Phanindra.resize_150x150.jpg",
+            "date":"2015-12-19",
+            "investor_name":"Phanindra Sama"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":242200,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/01b1ecf7-6bed-4f28-8899-8ef363d5fb7b/aprameya_radhakrishna.resize_150x150.jpg",
+            "date":"2015-12-19",
+            "investor_name":"Aprameya Radhakrishna"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":3875200,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/8d236eae-476d-4177-b4e3-bfc2c9433aaf/ScreenShot20170410at65049PM.crop_132x85_0,4.preview.png",
+            "date":"2015-12-19",
+            "investor_name":"Blume Ventures"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":1259440,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/5ccdc243-47e5-457c-afeb-408eab16b5dd/Phanindra.resize_150x150.jpg",
+            "date":"2015-12-19",
+            "investor_name":"Phanindra Sama"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":750820,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/01b1ecf7-6bed-4f28-8899-8ef363d5fb7b/aprameya_radhakrishna.resize_150x150.jpg",
+            "date":"2015-12-19",
+            "investor_name":"Aprameya Radhakrishna"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":242200,
+            "photo":"",
+            "date":"2016-01-28",
+            "investor_name":"Activate Technology Partners"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":242200,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/5e7eab9b-3293-4248-8f37-53d1c84ede7f/ScreenShot20170410at124718PM.crop_109x109_0,15.preview.png",
+            "date":"2016-01-28",
+            "investor_name":"Rajan Anandan"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":96880,
+            "photo":"https://s3-us-west-2.amazonaws.com/termsheet-uploadcare-assets/trackervc/4a44a511-d1c6-4f01-9fe0-9a66249b97a8/VikasMalpani.resize_150x150.jpg",
+            "date":"2016-01-28",
+            "investor_name":"Vikas Malpani"
+         },
+         {  
+            "brand_logo":"",
+            "brand":"Unacademy",
+            "entity":"Sorting Hat Technologies Private Limited",
+            "amount":346026,
+            "photo":"",
+            "date":"2017-05-15",
+            "investor_name":"Sandhya Subramanyam"
+         }
+      ],
+      "name":"Exam Prep"
+   }
+   };      
         graph.set_canvas(960,500);
         graph.set_margin(20,60,120,20);
         graph.timeChart(data,"date","name","amount","brand");
-        }
-    })//end of ajax
-}); 
+//         }
+//     })//end of ajax
+// }); 
 </script>
 </body>
 </html>

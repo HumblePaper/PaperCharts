@@ -25,19 +25,155 @@
 <script src='lib/d3.min.js'></script>
 <script src="src/chart.js"></script>
 <script>
-        $(document).ready(function() {//ajax code to get key values
-    $.ajax({
-        type: "GET",
-        url: "data/network-graph.json",//path of json data file from which json object is obtained
-        dataType: "text",
-        success: function(data) {
+    //     $(document).ready(function() {//ajax code to get key values
+    // $.ajax({
+    //     type: "GET",
+    //     url: "data/network-graph.json",//path of json data file from which json object is obtained
+    //     dataType: "text",
+    //     success: function(data) {
+data = [
+ {
+    "name": "Tracxn Technologies Private Limited",
+    "investors": [
+      {
+        "investments": 3,
+        "id": 5646,
+        "name": "SAIF Partners"
+      },
+      {
+        "investments": 1,
+        "id": 5650,
+        "name": "Kolluri Living Trust"
+      },
+      {
+        "investments": 1,
+        "id": 5616,
+        "name": "anand && venky LLC"
+      },
+      {
+        "investments": 1,
+        "id": 5651,
+        "name": "BeeNext"
+      },
+      {
+        "investments": 1,
+        "id": 5653,
+        "name": "DST Global"
+      },
+      {
+        "investments": 1,
+        "id": 5652,
+        "name": "VH Capital"
+      },
+      {
+        "investments": 1,
+        "id": 5654,
+        "name": "NRJN Family Trust"
+      },
+      {
+        "investments": 1,
+        "id": 5655,
+        "name": "3One4 Capital"
+      },
+      {
+        "investments": 2,
+        "id": 5656,
+        "name": "WCG International"
+      },
+      {
+        "investments": 1,
+        "id": 5657,
+        "name": "Seabright II"
+      },
+      {
+        "investments": 1,
+        "id": 5658,
+        "name": "Trustees, Amitabh and Shilpa Singhal Living Trust"
+      },
+      {
+        "investments": 1,
+        "id": 4691,
+        "name": "Accel Partners"
+      },
+      {
+        "investments": 1,
+        "id": 5542,
+        "name": "Sequoia Capital"
+      }
+    ],
+    "id": 93
+  },
+  {
+    "name": "Svatantra Online Services Private Limited",
+    "investors": [
+      {
+        "investments": 3,
+        "id": 5659,
+        "name": "Infocyber"
+      },
+      {
+        "investments": 4,
+        "id": 5660,
+        "name": "Birla Group"
+      },
+      {
+        "investments": 3,
+        "id": 5661,
+        "name": "TGS Investment & Trade"
+      },
+      {
+        "investments": 3,
+        "id": 5662,
+        "name": "IGH Holdings"
+      },
+      {
+        "investments": 1,
+        "id": 5663,
+        "name": "Umang Commercial"
+      }
+    ],
+    "id": 106
+  },
+  {
+    "name": "Moneymitra It Solutions Private Limited",
+    "investors": [
+      {
+        "investments": 4,
+        "id": 5667,
+        "name": "Loxo Holdings"
+      }
+    ],
+    "id": 112
+  },
+  {
+    "name": "Chumbak Design Private Limited",
+    "investors": [
+      {
+        "investments": 6,
+        "id": 5665,
+        "name": "SeedFund"
+      },
+      {
+        "investments": 5,
+        "id": 5665,
+        "name": "SeedFund"
+      },
+      {
+        "investments": 4,
+        "id": 5666,
+        "name": "Matrix Partners"
+      }
+    ],
+    "id": 113
+  }
+  ]; 
         graph.set_canvas(800,800);//set canvas width and height
         graph.set_margin(20,60,120,20);
-//(data , startup_name_key , startup_investor_key , startup_id_key , investor_id_key , investor_name_key , investor_investments_key)
+        //(data , startup_name_key , startup_investor_key , startup_id_key , investor_id_key , investor_name_key , investor_investments_key)
         graph.networkGraph(data,"name","investors","id","id","name","investments");
-}
-    })//end of ajax
-}); 
+// }
+//     })//end of ajax
+// }); 
 
 </script>
 </body>

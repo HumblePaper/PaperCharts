@@ -10,20 +10,95 @@
 <script src='lib/moment.js'></script>
 <script src="src/chart.js"></script>
 <script>
-        $(document).ready(function() {//ajax code to get key values
-    $.ajax({
-        type: "GET",
-        url: "data/data.json",//path of json data file from which json object is obtained
-        dataType: "text",
-        success: function(data) {
-                
+    //     $(document).ready(function() {//ajax code to get key values
+    // $.ajax({
+    //     type: "GET",
+    //     url: "data/data.json",//path of json data file from which json object is obtained
+    //     dataType: "text",
+    //     success: function(data) {
+     data = { "Market" : "Sector",
+  "children" : [
+  {
+    "Market": "Used Goods Marketplace",
+    "Amount": 423225136,
+    "Last_Transaction_Date": "2016-07-23",
+    "Investment_Count": 14
+  },
+  {
+    "Market": "Marketplace",
+    "Amount": 21517113711,
+    "Last_Transaction_Date": "2016-07-23",
+    "Investment_Count": 98
+  },
+  {
+    "Market": "Healthcare Tech",
+    "Amount": 3526161580,
+    "Last_Transaction_Date": "2016-09-16",
+    "Investment_Count": 127
+  },
+  {
+    "Market": "HR Tech",
+    "Amount": 2095630,
+    "Last_Transaction_Date": "2016-10-01",
+    "Investment_Count": 2
+  },
+  {
+    "Market": "Skill development",
+    "Amount": 2095630,
+    "Last_Transaction_Date": "2016-10-01",
+    "Investment_Count": 2
+  },
+  {
+    "Market": "Online Hypermarket",
+    "Amount": 109672354043,
+    "Last_Transaction_Date": "2016-10-03",
+    "Investment_Count": 121
+  },
+  {
+    "Market": "Coworking",
+    "Amount": 539838101,
+    "Last_Transaction_Date": "2016-10-28",
+    "Investment_Count": 14
+  },
+  {
+    "Market": "Online Grocery",
+    "Amount": 13085351803,
+    "Last_Transaction_Date": "2016-11-05",
+    "Investment_Count": 139
+  },
+  {
+    "Market": "K12 Learning",
+    "Amount": 6705605708,
+    "Last_Transaction_Date": "2016-11-21",
+    "Investment_Count": 34
+  },
+  {
+    "Market": "Hyperlocal",
+    "Amount": 2598330932,
+    "Last_Transaction_Date": "2016-11-30",
+    "Investment_Count": 36
+  },
+  {
+    "Market": "Sales Tech",
+    "Amount": 287698360,
+    "Last_Transaction_Date": "2016-12-10",
+    "Investment_Count": 2
+  },
+  {
+    "Market": "Hotel Aggregation",
+    "Amount": 11750375703,
+    "Last_Transaction_Date": "2016-12-15",
+    "Investment_Count": 52
+  }
+  ]
+};           
         graph.set_canvas(960,500);//set canvas width and height
         graph.set_margin(20,60,120,20);
         //arguments for heat map function(json_data,area,color_depth,name)
         graph.heatMap(data,"Amount","Investment_Count","Market");
-}
-    })//end of ajax
-}); 
+// }
+//     })//end of ajax
+// }); 
 
 </script>
 </body>

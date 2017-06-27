@@ -1,10 +1,13 @@
 
   /**
-   *   @chart.js
-   * @fileOverview  A javascript library for various d3 chart tool functions.
+   * 
+   * @chart.js
+   * @fileoverview  A javascript library for various d3 chart tool functions.
+   * @author Abraham John Paul
    */
 
 /** @class graph */
+
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -12,7 +15,8 @@
 	(factory((global.graph = global.graph || {}))); /** use object 'graph' to access the functions and other variables*/ 
 }(this, (function (exports) {
 
-margin_create = function (a,b,c,d){/** this function creates the margin with passed arguments to set_margin()*/
+
+margin_create = function (a,b,c,d){/* this function creates the margin with passed arguments to set_margin()*/
     this.top = a;
     this.bottom = b;
     this.left = c;
@@ -23,14 +27,30 @@ margin_create = function (a,b,c,d){/** this function creates the margin with pas
             var width  , height; /**width and height of the canvas*/
 
 var margin;
+
+
 var set_margin = function(w,x,y,z)
+/** 
+ * @method set_margin
+ * @memberof graph
+ * @description this function sets the margin for the graph in the canvas.
+ * @param {int} top : corresponds to the top margin
+ * @param {int} bottom : corresponds to the bottom margin
+ * @param {int} left : corresponds to the left margin
+ * @param {int} text : corresponds to the right margin
+ */
             {
              var a=w , b=x , c=y , d=z;
              margin = new margin_create(a,b,c,d);/**creating margin*/
             }
 
-var set_canvas = function(w,h)/**
- * assign values passed to width and height parameters
+var set_canvas = function(w,h)
+/** 
+ * @method set_canvas
+ * @memberof graph
+ * @description this function sets the width and heigth of the canvas.
+ * @param {int} width : corresponds to the width of the canvas
+ * @param {int} height : corresponds to the height of the canvas
  */
 {
     width = w;
@@ -58,7 +78,7 @@ var xParam , yParam , radius , name , i,j,k;
 var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
 var date = [];
 
-var svg = d3.select("body").select("svg")
+var svg = d3.select("body").append("svg")
 .attr("width" , width)
 .attr("height" , height);
 
@@ -74,8 +94,7 @@ var x = d3.scaleTime().rangeRound([0 , gWidth]),//seeting range for x and y axes
 var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
-var d = $.parseJSON(data);
-
+d= data;
 for(var i = 0 ; i< keys.length ; i++)//matching function parameters to the json keys
    { 
     if(keys[i].search(xAxis) == 0)
@@ -199,7 +218,7 @@ var circle = k.append("circle")
                 .attr("cy" , function(d){ return y(d[yParam]); })
                 .attr("r" ,40)//"rgb(50 , 154 , 188)"
                 .attr("fill",function(d){ 
-                           if(d[xParam]>x.domain()[0]) 
+                           if(d[xParam]>=x.domain()[0]) 
                                 return "rgb(50 , 154 , 188)"; 
                             else
                         return "none";
@@ -233,11 +252,13 @@ var circle = k.append("circle")
                 });
 
 function processData(data1) {
-var json = $.parseJSON(data1);
+
+var json =data1[0];
+
 var k = [];
 var keys = [];
 var i=0;
-for(var key in json[0])
+for(var key in json)
 {
     keys.push(key);
 
@@ -272,11 +293,11 @@ var xParam , yParam , radius , name , i,j,k;
 var flagX=0 , flagY=0 , flagR = 0, flagN = 0;
 var date = [];
 
-var tooltip = d3.select("body").append("div")	
-    .attr("class", "hidden tooltip")				
-    .style("opacity", 0);
+// var tooltip = d3.select("body").append("div")	
+//     .attr("class", "hidden tooltip")				
+//     .style("opacity", 0);
 
-var svg = d3.select("body").select("svg")
+var svg = d3.select("body").append("svg")
 .attr("width" , width)
 .attr("height" , height);
 
@@ -290,7 +311,7 @@ var x = d3.scaleTime().rangeRound([0 , gWidth]),
 var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
-var d = $.parseJSON(data);
+var d = data;
 
 for(var i = 0 ; i< keys.length ; i++)
    { 
@@ -427,16 +448,16 @@ var circle = k.append("circle")
                 .attr("cy" , function(d){ return y(d[yParam]); })
                 .attr("r" ,40)//"rgb(50 , 154 , 188)"
                 .attr("fill",function(d){ 
-                           if(d[xParam]>x.domain()[0]) 
+                           if(d[xParam]>=x.domain()[0]) 
                                 return "rgb(50 , 154 , 188)"; 
                             else
                         return "none";
                     })
                 .attr("opacity","0.5").on("mouseover", function (d) {
-          tooltip.classed('hidden', false)
-            .attr('style', 'left:' + (d3.event.clientX + 20) + 'px; top:' + (d3.event.clientY - 20) + 'px')
-            .html(function(d) {var str = radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\n"+name+" : "+d[name]+"\n"+yParam+" : "+d[yParam];
-                    return str; });
+        //   tooltip.classed('hidden', false)
+        //     .attr('style', 'left:' + (d3.event.clientX + 20) + 'px; top:' + (d3.event.clientY - 20) + 'px')
+        //     .html(function(d) {var str = radius +" : " +d[radius]+ "\n"+xParam+" : "+d[xParam]+"\n"+name+" : "+d[name]+"\n"+yParam+" : "+d[yParam];
+        //             return str; });
         })					
         .on("mouseout",function () {
           tooltip.classed('hidden', true);
@@ -459,7 +480,7 @@ function zoomed() {
         .attr("cx", function(d){ return xz(d[xParam]); })
         .attr("cy", function(d){ return y(d[yParam]); })
         .attr("fill",function(d){ 
-                           if(d[xParam]>xz.domain()[0]) 
+                           if(d[xParam]>=xz.domain()[0]) 
                                 return "rgb(50 , 154 , 188)"; 
                             else
                         return "none";
@@ -483,11 +504,11 @@ function zoomed() {
       .call(zoom);
 
 function processData(data1) {
-var json = $.parseJSON(data1);
+var json = data1[0];
 var k = [];
 var keys = [];
 var i=0;
-for(var key in json[0])
+for(var key in json)
 {
     keys.push(key);
 
@@ -539,23 +560,23 @@ var svg = d3.select("body").append("svg")
 .attr("height" , height);
 
 
-var div = d3.select("body").append("div")
-            .attr("id","filter");
-var filter = d3.select("#filter").append("p").attr("font-size",10).html("Index Filter : ");
-var dropDown = filter.append("select")
-                 .attr("name", "five-sectors");
-/*list of options for filtering the graph based on index in the json file*/
-var opt = ["start-end","0 - 5","5 - 10","10 - 15","15 - 20","20 - 25",
-           "25 - 30","30 - 35","35 - 40","40 - 45","45 - 50","50 - 55" ];
+// var div = d3.select("body").append("div")
+//             .attr("id","filter");
+// var filter = d3.select("#filter").append("p").attr("font-size",10).html("Index Filter : ");
+// var dropDown = filter.append("select")
+//                  .attr("name", "five-sectors");
+// /*list of options for filtering the graph based on index in the json file*/
+// var opt = ["start-end","0 - 5","5 - 10","10 - 15","15 - 20","20 - 25",
+//            "25 - 30","30 - 35","35 - 40","40 - 45","45 - 50","50 - 55" ];
 
-var options = dropDown.selectAll("option")
-                      .data(opt)
-                      .enter()
-                      .append("option");
+// var options = dropDown.selectAll("option")
+//                       .data(opt)
+//                       .enter()
+//                       .append("option");
 
-options.text(function(d){return d;})
-       .attr("value" , function(d){var value = d.split(" ")
-           return value[0];});
+// options.text(function(d){return d;})
+//        .attr("value" , function(d){var value = d.split(" ")
+//            return value[0];});
 
 var outer_g = svg.append("g").attr("class","outer_g")
 .attr("transform","translate(" + margin.left + "," + margin.top + ")");
@@ -567,7 +588,7 @@ var x = d3.scaleTime().rangeRound([0 , gWidth]),
 var t = d3.transition().duration(750);
 
 var parseTime = d3.timeParse("%Y-%m-%d");//date format
-var d = $.parseJSON(data);
+var d =data;
 
 
 for(var i = 0 ; i< data_keys.length ; i++)
@@ -626,11 +647,13 @@ if(!flagN)
     alert("Wrong name parameter");
 }
 
- dropDown.on("change", function() {
-       start = parseInt(this.value);
-       end = start + 5;
-       plot(start,end);
-  });
+//  dropDown.on("change", function() {
+//        start = parseInt(this.value);
+//        end = start + 5;
+//        plot(start,end);
+//   });
+console.log("len ",keys.length);
+plot(0,keys.length);
 
 function plot(start,end)
 {
@@ -719,7 +742,7 @@ var circle = k.append("circle")
                 .transition(t)
                 .attr("r" , 10)
                 .attr("fill",function(d){ 
-                           if(parseTime(d[xParam])>x.domain()[0]) 
+                           if(parseTime(d[xParam])>=x.domain()[0]) 
                                 return color(z[yParam]); 
                             else
                         return "none";
@@ -749,7 +772,7 @@ var circle = k.append("circle")
                 .transition(t)
                 .attr("r" , 10)
                 .attr("fill",function(d){ 
-                           if(parseTime(d[xParam])>xz.domain()[0]) 
+                           if(parseTime(d[xParam])>=xz.domain()[0]) 
                                 return color(z[yParam]); 
                             else
                         return "none";
@@ -770,7 +793,7 @@ var circle = k.append("circle")
 
 
 function processData(data1) {
-var json = $.parseJSON(data1);
+var json = data1;
 var k = [];
 var keys = [];
 var data_keys=[];
@@ -801,10 +824,10 @@ for(var i in  json[keys[1]].data[0])
 
 var heatMap = function(data,area,color,name){
 var keys = [],i;
-console.log("data1",$.parseJSON(data));
+//console.log("data1",$.parseJSON(data));
 keys = processData(data);
 
-data = $.parseJSON(data);
+//data = $.parseJSON(data);
 
 var colorParam , areaParam ,nameParam;
 var flagA=0 , flagC=0 , flagN = 0;
@@ -915,7 +938,7 @@ for(i = 0 ; i< keys.length ; i++)//mapping parameters to keys form the json file
                     return str; });
 
 function processData(data) {//function to obtain keys of json object
-var json = $.parseJSON(data);
+var json = data;
 var keys = [];
 for(var key in json["children"][0])
 {
@@ -1036,7 +1059,7 @@ var count = 0 ;
 }//end of map function
 
 /** 
-* @method networkgraph
+* @method networkGraph
 * @memberof graph
 * @description this function plots a network of nodes of startups and their investors
 * @param {json} data : the json object obtained after passing the json file to ajax code in the example 
@@ -1053,7 +1076,7 @@ var networkGraph = function(data , startup_name_key , startup_investor_key , sta
 {   
     var keys;
     
-    data = $.parseJSON(data);//parse text data to json object
+    //data = $.parseJSON(data);//parse text data to json object
     keys = processData(data , startup_investor_key);//returns keys from two levels
 
     var startup_keys = keys[0];
@@ -1125,20 +1148,22 @@ var networkGraph = function(data , startup_name_key , startup_investor_key , sta
                 .attr("width" , width)
                 .attr("height" , height);
     g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-console.log(data[0][startup_investor_key][0][investor_id_key]);
-    var investors = [];
+    var investors = [] ;
     var network_data = {};
     network_data.nodes = [];
     network_data.links = [];
-    for(var i=10; i<15;i++)//currnetly limited to 5
+    var flag = 0;
+    for(var i=0; i<data.length;i++)
     {
         for(var j=0; j<data[i][startup_investor_key].length;j++)
         {
-            if(data[i][startup_investor_key][j][investor_id_key] in investors)
-                {
-                    console.log("redundant");
-                }
-            else
+                for(var k=0;k<investors.length;k++)
+                    if(data[i][startup_investor_key][j][investor_id_key] == investors[k])
+                        {
+                            flag = 1;
+                            break;
+                        }
+                if(flag == 0)
                 {
                     var node_data = {};
                     investors.push(data[i][startup_investor_key][j][investor_id_key]);
@@ -1159,8 +1184,8 @@ console.log(data[0][startup_investor_key][0][investor_id_key]);
         node_data.type = "startup";
         network_data.nodes.push(node_data);
     }
-console.log(network_data);
 
+console.log("investors :" ,investors);
 
 var nodes = network_data.nodes;
 var links = network_data.links;
@@ -1275,6 +1300,8 @@ for(var i in  json[0][investor_key][0])
 }
 
 }//end of networkGraph
+
+
 
 exports.map = map;
 exports.set_margin = set_margin;
